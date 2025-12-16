@@ -141,5 +141,7 @@
   .my-container {
     @apply max-w-[1660px] w-full mx-auto px-5;
   }
-  
+  .card{
+    @apply flex flex-col bg-[#2E2C38] border border-[#3F3D48] rounded-[32px] px-4 md:px-10 py-7 gap-7
+  }
 }
