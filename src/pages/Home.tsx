@@ -36,6 +36,7 @@ export default function Home() {
                     {[0, 1, 2, 3, 4].map((item, _) => {
                       return (
                         <DetailBox
+                          key={item}
                           kpi={{
                             title: "Reach",
                             before: "",
@@ -58,9 +59,7 @@ export default function Home() {
                             <h3 className="text-lg font-semibold leading-6 text-white ">
                               {selectedKpi.title} trend
                             </h3>
-                            <div>
-                              Graph will come here
-                            </div>
+                            <div>Graph will come here</div>
                           </div>
                         </div>
                         <div className="w-full">
