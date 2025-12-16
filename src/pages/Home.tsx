@@ -8,7 +8,6 @@ import {
 import { ChevronDown, Clock9, SettingsIcon } from "lucide-react";
 import aiIcon from "@/assets/ai-icon.svg";
 import funnelChart from "@/assets/funnelChart.svg";
-import { da } from "date-fns/locale";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
