@@ -6,8 +6,52 @@ import type { DashboardKpi } from "@/types";
 import { dashboardKPIs, funnelData } from "../../allJSONs";
 import { useState } from "react";
 import DetailBox from "@/components/ui/DetailBox";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { Progress } from "@/components/ui/progress";
+import {
+  CircleCheckIcon,
+  Clock1,
+  LightbulbIcon,
+  TrendingUp,
+} from "lucide-react";
 
 export default function Home() {
+  const data = [
+    { name: "jan", value: 0.28 },
+    { name: "feb", value: 0.35 },
+    { name: "mar", value: 0.5 },
+    { name: "apr", value: 0.62 },
+    { name: "may", value: 0.75 },
+    { name: "jun", value: 0.82 },
+  ];
+  const performanceByRegion = [
+    { region: "Ontario", progress: 100, change: "+4.1%" },
+    { region: "British Columbia", progress: 50, change: "+2.2%" },
+    { region: "Quebec", progress: 30, change: "+1.5%" },
+    { region: "Alberta", progress: 10, change: "+0.8%" },
+  ];
+  const funnelSteps = [
+    { label: "Impressions", value: "184.2M" },
+    { label: "Engagement", value: "0.82%" },
+    { label: "Consideration", value: "183K" },
+    { label: "Store visits", value: "512K" },
+    { label: "Loyalty", value: "38K" },
+  ];
+  const gradients = [
+    "linear-gradient(135deg, #ff8cc3, #ff4b9a)",
+    "linear-gradient(135deg, #ff6fb0, #ff3388)",
+    "linear-gradient(135deg, #ff5fa2, #ff1f7a)",
+    "linear-gradient(135deg, #ff4b9a, #e91e63)",
+    "linear-gradient(135deg, #ff3388, #d81b60)",
+  ];
+
   const [selectedKpi, setSelectedKpi] = useState<DashboardKpi | null>(null);
 
   return (
@@ -32,7 +76,7 @@ export default function Home() {
               <div className="flex flex-col gap-4">
                 <div className="card">
                   <CardHeader title="" />
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 ">
                     {[0, 1, 2, 3, 4].map((item, _) => {
                       return (
                         <DetailBox
@@ -50,29 +94,155 @@ export default function Home() {
                     })}
                   </div>
                 </div>
-                <div className="w-full flex flex-col md:flex-row gap-5">
+                <div className="w-full flex flex-col md:flex-row gap-5 ">
                   <div className="w-full max-w-200 flex flex-col gap-3">
                     <div className="card">
-                      <div className="gap-6 flex flex-row justify-between">
-                        <div className="w-full">
+                      <div className="flex flex-col md:flex-row justify-between gap-x-10">
+                        <div className="w-full max-w-100">
                           <div className="flex flex-col justify-between">
-                            <h3 className="text-lg font-semibold leading-6 text-white ">
+                            <h3 className="text-lg font-semibold leading-6 text-white mb-4 md:mb-8">
                               {selectedKpi.title} trend
                             </h3>
-                            <div>Graph will come here</div>
+                            <div className="w-full">
+                              <ResponsiveContainer width="100%" height={230}>
+                                <AreaChart data={data}>
+                                  <defs>
+                                    <linearGradient
+                                      id="area"
+                                      x1="0"
+                                      y1="0"
+                                      x2="0"
+                                      y2="1"
+                                    >
+                                      <stop
+                                        offset="0%"
+                                        stopColor="#ff1f7a"
+                                        stopOpacity={0.35}
+                                      />
+                                      <stop
+                                        offset="100%"
+                                        stopColor="#ff1f7a"
+                                        stopOpacity={0.05}
+                                      />
+                                    </linearGradient>
+                                  </defs>
+
+                                  <XAxis
+                                    dataKey="name"
+                                    tick={{ fill: "#ffffff", fontSize: 12 }}
+                                    axisLine={{
+                                      stroke: "rgba(255,255,255,0.4)",
+                                    }}
+                                  />
+                                  <YAxis
+                                    domain={[0, 1]}
+                                    tickFormatter={(v) => `${v}%`}
+                                    tick={{ fill: "#ffffff", fontSize: 12 }}
+                                    axisLine={{
+                                      stroke: "rgba(255,255,255,0.4)",
+                                    }}
+                                  />
+                                  <Tooltip formatter={(v) => `${v}%`} />
+
+                                  <Area
+                                    type="monotone"
+                                    dataKey="value"
+                                    stroke="#EC1A75"
+                                    fill="url(#area)"
+                                    strokeWidth={2}
+                                  />
+                                </AreaChart>
+                              </ResponsiveContainer>
+                            </div>
                           </div>
                         </div>
-                        <div className="w-full">
+                        <div className=" grow">
                           <CardHeader title="Performance by region" />
+                          <div className="flex flex-col gap-y-3.5 mt-4 md:mt-8">
+                            {performanceByRegion.map((data, _) => (
+                              <div
+                                className="w-full flex flex-col gap-2"
+                                key={data.progress}
+                              >
+                                <div className="flex justify-between">
+                                  <span className="text-white  font-extralight">
+                                    {data.region}
+                                  </span>
+                                  <span className="text-white  font-extralight">
+                                    {data.change}
+                                  </span>
+                                </div>
+                                <Progress value={data.progress} />
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
                     <div className="card">
                       <CardHeader title="Customer journey impact" />
+                      <div className="flex flex-col md:flex-row gap-2">
+                        {funnelSteps.map((step, index) => {
+                          const isFirst = index === 0;
+                          return (
+                            <div
+                              key={step.label}
+                              className={`relative flex flex-col justify-center text-white bg-primary  w-full items-center *:flex-1 py-3 ml-0 md:-ml-4.5 ${
+                                isFirst
+                                  ? "clip-chevron-first rounded-md"
+                                  : "clip-chevron rounded-md md:rounded-none"
+                              }`}
+                              style={{
+                                background: gradients[index % gradients.length],
+                              }}
+                            >
+                              <span className="text-[16px] opacity-90">
+                                {step.label}
+                              </span>
+                              <span className="text-[28px] font-bold">
+                                {step.value}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                   <div className="card grow">
-                    <CardHeader title="AI insights &Recommendations" />
+                    <CardHeader title="AI insights & Recommendations" />
+                    <div className="flex flex-col gap-y-5">
+                      <div className="flex flex-row gap-4 items-center">
+                        <TrendingUp className="text-primary w-5" />
+                        <h4 className="font-[18px] text-white leading-4">
+                          CTR up 3.1% vs prior 20 days
+                        </h4>
+                      </div>
+                      <div className="flex flex-row gap-4 items-center">
+                        <TrendingUp className="text-primary w-5" />
+                        <h4 className="font-[18px] text-white leading-4">
+                          Ontario best-performing region (+4.1%)
+                        </h4>
+                      </div>
+                      <div className="flex flex-row gap-4 items-center">
+                        <CircleCheckIcon className="text-primary w-5" />
+                        <h4 className="font-[18px] text-white leading-4">
+                          {"Creative A outperforming B by (+3.4%)"}
+                        </h4>
+                      </div>
+                      <div className="flex flex-row gap-4 items-center">
+                        <Clock1 className="text-primary w-5" />
+                        <h4 className="font-[18px] text-white leading-4">
+                          Afternoon highest engagement
+                        </h4>
+                      </div>
+                      <div className="flex flex-row gap-4 items-center">
+                        <LightbulbIcon className="text-primary w-5" />
+                        <h4 className="font-[18px] text-white leading-4">
+                          Recommendation, shift 10% spend to high traffic
+                          regions
+                        </h4>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
