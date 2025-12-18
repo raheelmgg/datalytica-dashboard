@@ -12,7 +12,8 @@ type Props = {
 };
 
 function DetailBox({ kpi, tooltipMsg }: Props) {
-  const isKpiTrue = kpi.change.trim().startsWith("+");
+  const isKpiTrue =
+    kpi.change.trim().startsWith("+") || kpi.before?.trim().startsWith("+");
   const isTooltipMsg = tooltipMsg && tooltipMsg.length > 0;
 
   return (

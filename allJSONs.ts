@@ -1,4 +1,8 @@
-import type { DashboardKpi, FunnelStage } from "@/types";
+import type {
+  DashboardKpi,
+  FunnelStage,
+  performanceByRegionType,
+} from "@/types";
 
 export const dashboardKPIs: DashboardKpi[] = [
   {
@@ -98,7 +102,105 @@ export const dashboardKPIs: DashboardKpi[] = [
     tooltipMsg: "Tooltip content can be used here",
   },
 ];
-
+export const doohKPIs: DashboardKpi[] = [
+  {
+    title: "Food traffic lift",
+    before: "",
+    value: "6.4",
+    suffix: "%",
+    change: "+ 0.7%",
+    tooltipMsg: "Increase in store foot traffic driven by campaign exposure",
+  },
+  {
+    title: "Category sales lift",
+    before: "",
+    value: "11.2",
+    suffix: "%",
+    change: "+ 6.1%",
+    tooltipMsg: "Sales growth within the advertised product category",
+  },
+  {
+    title: "Total impressions",
+    before: "",
+    value: "4.7",
+    suffix: "%",
+    change: "- 2.9%",
+    tooltipMsg: "Change in total impressions delivered across channels",
+  },
+  {
+    title: "Item level sales lift",
+    before: "",
+    value: "18.7",
+    suffix: "%",
+    change: "+ 9.4%",
+    tooltipMsg: "Sales lift at individual item or SKU level",
+  },
+  {
+    title: "New to brand shoppers",
+    before: "",
+    value: "9.3",
+    suffix: "%",
+    change: "+ 11.2%",
+    tooltipMsg:
+      "Percentage of shoppers purchasing the brand for the first time",
+  },
+  {
+    title: "Basket size change",
+    before: "",
+    value: "7.8",
+    suffix: "%",
+    change: "+ 1.4%",
+    tooltipMsg: "Average change in number of items per transaction",
+  },
+  {
+    title: "Dwell time",
+    before: "",
+    value: "2.1",
+    suffix: "%",
+    change: "- 3.2%",
+    tooltipMsg: "Change in average time spent in store",
+  },
+  {
+    title: "Frequency per shopper",
+    before: "",
+    value: "1.6",
+    suffix: "%",
+    change: "- 13.7%",
+    tooltipMsg: "Change in visit frequency per shopper",
+  },
+  {
+    title: "Return visit rate",
+    before: "",
+    value: "5.1",
+    suffix: "%",
+    change: "+ 7.6%",
+    tooltipMsg: "Increase in repeat visits after initial exposure",
+  },
+  {
+    title: "Reach by store",
+    before: "",
+    value: "14.5",
+    suffix: "%",
+    change: "+ 15.1%",
+    tooltipMsg: "Increase in unique reach across store locations",
+  },
+  {
+    title: "Conversion to purchase",
+    before: "",
+    value: "3.8",
+    suffix: "%",
+    change: "+ 5.3%",
+    tooltipMsg: "Lift in conversion from exposure to purchase",
+  },
+  {
+    title: "Incremental reach",
+    before: "",
+    value: "3.7",
+    suffix: "%",
+    change: "- 4.8%",
+    tooltipMsg: "Net new reach beyond baseline audience",
+  },
+];
 export const funnelData: FunnelStage[] = [
   {
     label: "Ad impressions",
@@ -142,4 +244,10 @@ export const funnelData: FunnelStage[] = [
     width: 120,
     color: "#ffe1ee",
   },
+];
+export const performanceByRegion: performanceByRegionType[] = [
+  { region: "Ontario", progress: 100, change: "+4.1%" },
+  { region: "British Columbia", progress: 50, change: "+2.2%" },
+  { region: "Quebec", progress: 30, change: "+1.5%" },
+  { region: "Alberta", progress: 10, change: "+0.8%" },
 ];

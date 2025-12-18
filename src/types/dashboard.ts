@@ -14,3 +14,8 @@ export interface FunnelStage {
   width: number;
   color: string;
 }
+export interface performanceByRegionType {
+  region: string;
+  progress: number;
+  change: string;
+}
