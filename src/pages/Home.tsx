@@ -17,8 +17,6 @@ import {
 import { Progress } from "@/components/ui/progress";
 import {
   CheckCircleIcon,
-  CircleCheckIcon,
-  Clock1,
   Clock12Icon,
   LightbulbIcon,
   TrendingUp,
