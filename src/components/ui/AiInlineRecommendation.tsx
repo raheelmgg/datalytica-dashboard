@@ -18,7 +18,7 @@ function AiInlineRecommendation({ Icon, text, recommendationType }: Props) {
   return (
     <div className="flex flex-row gap-4 items-center">
       <Icon className={`w-5 h-5 ${trendClass}`} />
-      <h4 className="text-[18px] text-white leading-6">{text}</h4>
+      <h4 className="text-[16px] text-white leading-6">{text}</h4>
     </div>
   );
 }
