@@ -208,10 +208,10 @@ export default function Dooh() {
                                 key={data.progress}
                               >
                                 <div className="flex justify-between">
-                                  <span className="text-white  font-extralight">
+                                  <span className="text-white  font-normal">
                                     {data.region}
                                   </span>
-                                  <span className="text-white  font-extralight">
+                                  <span className="text-white  font-normal">
                                     {data.change}
                                   </span>
                                 </div>

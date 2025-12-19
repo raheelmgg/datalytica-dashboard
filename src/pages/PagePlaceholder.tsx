@@ -8,10 +8,10 @@ export default function PagePlaceholder({
   description,
 }: PagePlaceholderProps) {
   return (
-    <div className="p-6 text-white bg-red-300">
+    <div className="p-6 text-white card">
       <h1 className="text-2xl font-semibold">{title}</h1>
       {description ? (
-        <p className="mt-2 text-sm text-white/70">{description}</p>
+        <p className="text-sm text-white/70">{description || ""}</p>
       ) : null}
     </div>
   );
