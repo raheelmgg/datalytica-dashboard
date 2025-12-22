@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import LayoutHeader from "@/components/LayoutHeader";
-import clientLogo from "@/assets/Gulpmedia-logo.png";
+import clientLogo from "@/assets/Datalytica-logo-white.png";
 import Sidebar from "@/components/Sidebar";
 
 type LayoutProps = {
@@ -17,7 +17,7 @@ function Layout({ children }: LayoutProps) {
         <img
           src={clientLogo}
           alt="Brand Logo here."
-          className="w-full max-w-39.5"
+          className="w-full max-w-38"
         />
       </section>
       <main className="my-container flex flex-col md:flex-row gap-2.5 md:gap-5 md:items-center">
