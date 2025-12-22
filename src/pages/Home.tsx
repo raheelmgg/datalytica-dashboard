@@ -95,7 +95,7 @@ export default function Home() {
     <section className="w-full flex flex-col gap-y-7">
       <PageHeader title="Marketing strategic campaign" chips={true} />
       <div className="w-full flex flex-col md:flex-row gap-5">
-        <div className="card w-full max-w-200">
+        <div className="card w-full max-w-[100%] md:max-w-[58%]">
           <CardHeader title="Dashboard" />
           <div className="cardBody grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-y-4 md:gap-x-7">
             {dashboardKPIs.map((kpi) => (
@@ -120,7 +120,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row gap-5 ">
-                  <div className="w-full max-w-200 flex flex-col gap-3">
+                  <div className="w-full max-w-[100%] md:max-w-[58%] flex flex-col gap-3">
                     <div className="card">
                       <div className="flex flex-col md:flex-row justify-between gap-x-10">
                         <div className="w-full max-w-100">
@@ -272,22 +272,22 @@ export default function Home() {
           <CardHeader title="Path to purchase" />
           <div className="flex flex-row justify-between align-top gap-5 md:gap-2">
             <div>
-              <img src={funnelChart} alt="Funnel Chart" className="" />
+              <img src={funnelChart} alt="Funnel Chart" className="w-full" />
             </div>
-            <div className="flex flex-col gap-2 md:gap-4 justify-between">
+            <div className="flex flex-col gap-1 md:gap-2 justify-between">
               {funnelData.map((data) => {
                 return (
                   <div
                     className="flex flex-col text-white gap-1 md:gap-2"
                     key={data.value}
                   >
-                    <span className="text-[13px] md:text-[16px] font-bold leading-4">
+                    <span className="text-[13px] md:text-[15px] font-bold leading-4">
                       {data.label}
                     </span>
-                    <span className="text-[11px] md:text-[14px] font-normal leading-4">
+                    <span className="text-[11px] md:text-[13px] font-normal leading-4">
                       {data.sub}
                     </span>
-                    <span className="text-[16px] md:text-[30px] font-bold text-primary leading-4">
+                    <span className="text-[16px] md:text-[28px] font-bold text-primary leading-4">
                       {data.value}
                     </span>
                   </div>

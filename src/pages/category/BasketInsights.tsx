@@ -110,7 +110,7 @@ export default function BasketInsights() {
     <section className="w-full flex flex-col gap-y-7">
       <PageHeader title="Basket insights" chips={true} />
       <div className="w-full flex flex-col md:flex-row gap-5">
-        <div className="card w-full max-w-200">
+        <div className="card w-full max-w-[100%] md:max-w-[58%]">
           <CardHeader title="Dashboard" />
           <div className="cardBody grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-y-4 md:gap-x-7">
             {basketInsightsKpi.map((kpi) => (
@@ -136,7 +136,7 @@ export default function BasketInsights() {
                   </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row gap-5 ">
-                  <div className="w-full max-w-200 flex flex-col gap-3">
+                  <div className="w-full max-w-[100%] md:max-w-[58%] flex flex-col gap-3">
                     <div className="card">
                       <div className="flex flex-col md:flex-row justify-between gap-x-10">
                         <div className="w-full max-w-100">

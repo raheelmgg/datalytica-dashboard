@@ -8,7 +8,7 @@ function PageHeader({ title, chips }: { title: string; chips?: boolean }) {
 
   return (
     <div>
-      <div className="w-full max-w-200 flex flex-col justify-start items-start md:flex-row md:justify-between gap-2">
+      <div className="w-full max-w-[100%] md:max-w-[58%] flex flex-col justify-start items-start md:flex-row md:justify-between gap-2">
         <h2 className="text-xl md:text-[30px] font-semibold leading-6 text-white ">
           {title}
         </h2>

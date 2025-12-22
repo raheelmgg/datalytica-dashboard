@@ -22,7 +22,7 @@ function DetailBox({ kpi, tooltipMsg }: Props) {
         isKpiTrue
           ? "bg-primary kpi-shadow-primary"
           : "bg-secondary kpi-shadow-secondary"
-      } w-full flex flex-col gap-2.5 md:gap-5 items-center justify-center rounded-3xl p-3 text-white transition-shadow duration-300 cursor-pointer relative`}
+      } w-full h-full flex flex-col gap-2.5 md:gap-5 items-center justify-center rounded-3xl p-3 text-white transition-shadow duration-300 cursor-pointer relative`}
     >
       <span className="text-[16px] font-bold leading-4 text-center">
         {kpi.title}

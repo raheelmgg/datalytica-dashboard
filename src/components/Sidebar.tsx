@@ -106,7 +106,7 @@ export default function Sidebar({ activePath }: SidebarProps) {
   }, [activePath]);
 
   const content = (
-    <nav className="w-64 text-white px-4 py-4 overflow-y-auto">
+    <nav className="w-64 text-white px-1 py-4 overflow-y-auto">
       <NavList
         items={navItems}
         activePath={activePath}
