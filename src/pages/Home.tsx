@@ -90,12 +90,11 @@ export default function Home() {
     },
   ];
   const [selectedKpi, setSelectedKpi] = useState<DashboardKpi | null>(null);
-
   return (
     <section className="w-full flex flex-col gap-y-7">
       <PageHeader title="Marketing strategic campaign" chips={true} />
       <div className="w-full flex flex-col md:flex-row gap-5">
-        <div className="card w-full max-w-[100%] md:max-w-[58%]">
+        <div className="card w-full max-w-full md:max-w-[58%]">
           <CardHeader title="Dashboard" />
           <div className="cardBody grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-y-4 md:gap-x-7">
             {dashboardKPIs.map((kpi) => (

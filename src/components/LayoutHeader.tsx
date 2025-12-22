@@ -1,6 +1,6 @@
 // import { Settings } from "lucide-react";
 
-import logo from "@/assets/datalytica-logo.png";
+import logo from "@/assets/Datalytica-logo-white.png";
 import { Button } from "./ui/button";
 import { SettingsDD } from "./ui/SettingsDD";
 
