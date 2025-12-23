@@ -1,328 +1,335 @@
+"use client";
+
 import PageHeader from "@/components/home/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { SearchIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
+
+/* -----------------------------
+   Schema
+------------------------------ */
+
+const formSchema = z.object({
+  dataSources: z.array(z.string()).optional(),
+  locations: z.array(z.string()).optional(),
+  searchLocation: z.string().optional(),
+
+  demographics: z.array(z.string()).optional(),
+  mediaHabits: z.array(z.string()).optional(),
+  lifestyle: z.array(z.string()).optional(),
+  productUsage: z.array(z.string()).optional(),
+  digitalBehaviour: z.array(z.string()).optional(),
+  cultural: z.array(z.string()).optional(),
+  geography: z.array(z.string()).optional(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+/* -----------------------------
+   Reusable checkbox group
+------------------------------ */
+
+function CheckboxGroup({
+  name,
+  options,
+  control,
+  isRow,
+}: {
+  name: keyof FormValues;
+  options: string[];
+  control: any;
+  isRow: boolean;
+}) {
+  return (
+    <div
+      className={`flex gap-3 ${
+        isRow ? "flex-row flex-wrap" : "md:flex-col flex-row flex-wrap "
+      }`}
+    >
+      {options.map((option) => (
+        <FormField
+          key={option}
+          control={control}
+          name={name}
+          render={({ field }) => {
+            const value: string[] = field.value || [];
+            const checked = value.includes(option);
+
+            return (
+              <FormItem className="flex items-center gap-3">
+                <FormControl>
+                  <Checkbox
+                    checked={checked}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        field.onChange([...value, option]);
+                      } else {
+                        field.onChange(value.filter((v) => v !== option));
+                      }
+                    }}
+                  />
+                </FormControl>
+                <FormLabel className="font-normal">{option}</FormLabel>
+              </FormItem>
+            );
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* -----------------------------
+   Component
+------------------------------ */
 
 export default function ConsumerInsights() {
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      dataSources: [],
+      searchLocation: "",
+      locations: [],
+      demographics: [],
+      mediaHabits: [],
+      lifestyle: [],
+      productUsage: [],
+      digitalBehaviour: [],
+      cultural: [],
+      geography: [],
+    },
+  });
+
+  function onSubmit(values: FormValues) {
+    const myPromise = new Promise<{ name: string }>((resolve, reject) => {
+      setTimeout(() => {
+        if (values.searchLocation?.trim()) {
+          resolve({ name: values.searchLocation });
+        } else {
+          reject("No search location provided");
+        }
+      }, 800);
+    });
+
+    toast.promise(myPromise, {
+      loading: "Applying filters...",
+      success: (data) => `Filters applied for "${data.name}"`,
+      error: () => "Please enter a search location",
+    });
+
+    console.log("values =>>>", values.searchLocation);
+  }
+
   return (
-    <div className="flex flex-col gap-y-12">
-      <PageHeader title="Store and shopper insights" chips={false} />
-      <div className="flex flex-col gap-5">
-        <div className="flex flex-col bg-[#2E2C38] border border-[#3F3D48] rounded-[32px] px-4 md:px-6 py-7 gap-3.5">
-          <div>
-            <h3 className="text-lg font-semibold leading-6 text-white">
-              Data source
-            </h3>
-          </div>
-          <div className="flex md:flex-row flex-wrap gap-2 md:gap-9">
-            <div className="flex items-center gap-3">
-              <Checkbox id="Vividata" />
-              <Label htmlFor="Vividata">Vividata</Label>
-            </div>
-            <div className="flex items-center gap-3">
-              <Checkbox id="Census" />
-              <Label htmlFor="Census">Census</Label>
-            </div>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-y-5"
+      >
+        <PageHeader title="Store and shopper insights" chips={false} />
 
-            <div className="flex items-center gap-3">
-              <Checkbox id="Mobile" />
-              <Label htmlFor="Mobile">Mobile</Label>
+        <div className="bg-[#2E2C38] border border-[#3F3D48] rounded-[32px] px-6 py-7">
+          <h3 className="text-lg font-semibold text-white mb-4">Data source</h3>
+          <CheckboxGroup
+            name="dataSources"
+            control={form.control}
+            options={[
+              "Vividata",
+              "Census",
+              "Mobile",
+              "Transactional",
+              "Loyalty",
+              "CRM",
+            ]}
+            isRow={true}
+          />
+        </div>
+
+        <div className="bg-[#2E2C38] border border-[#3F3D48] rounded-[32px] px-6 py-7">
+          <h3 className="text-lg font-semibold text-white mb-4">Location</h3>
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+            <div className="w-full">
+              <FormField
+                control={form.control}
+                name="searchLocation"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Search here"
+                        className="rounded-full bg-white border-none outline-0 pl-4 text-[#6E6E7A]"
+                      />
+                    </FormControl>
+                    <SearchIcon className="absolute right-4 top-1.5 text-primary" />
+                  </FormItem>
+                )}
+              />
             </div>
-            <div className="flex items-center gap-3">
-              <Checkbox id="Transactional" />
-              <Label htmlFor="Transactional">Transactional</Label>
-            </div>
-            <div className="flex items-center gap-3">
-              <Checkbox id="Loyalty" />
-              <Label htmlFor="Loyalty">Loyalty</Label>
-            </div>
-            <div className="flex items-center gap-3">
-              <Checkbox id="CRM" />
-              <Label htmlFor="CRM">CRM</Label>
+            <div className="w-full">
+              <CheckboxGroup
+                name="locations"
+                control={form.control}
+                options={[
+                  "AB",
+                  "BC",
+                  "MB",
+                  "NB",
+                  "NL",
+                  "NS",
+                  "ON",
+                  "PE",
+                  "QC",
+                  "SK",
+                ]}
+                isRow={true}
+              />
             </div>
           </div>
         </div>
-        <div className="flex flex-col bg-[#2E2C38] border border-[#3F3D48] rounded-[32px] px-4 md:px-6 py-7 gap-3.5">
-          <div>
-            <h3 className="text-lg font-semibold leading-6 text-white">
-              Location
-            </h3>
-          </div>
-          <div className="flex flex-col md:flex-row items-center gap-11">
-            <div className="flex w-full relative">
-              <input
-                className="w-full bg-white rounded-full border-0 text-sm text-[#6E6E7A] outline-0 py-2 px-4"
-                type="text"
-                id="search"
-                name="search"
-                placeholder="Search here"
-              ></input>
-              <SearchIcon className="text-primary absolute z-10 right-2 top-1.25" />
-            </div>
-            <div className="grid grid-cols-5 w-full gap-4">
-              <div className="flex items-center gap-3">
-                <Checkbox id="AB" />
-                <Label htmlFor="AB">AB</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox id="MB" />
-                <Label htmlFor="MB">MB</Label>
-              </div>
 
-              <div className="flex items-center gap-3">
-                <Checkbox id="NL" />
-                <Label htmlFor="NL">NL</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox id="ON" />
-                <Label htmlFor="ON">ON</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox id="QC" />
-                <Label htmlFor="QC">QC</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox id="BC" />
-                <Label htmlFor="BC">BC</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox id="NB" />
-                <Label htmlFor="NB">NB</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox id="NS" />
-                <Label htmlFor="NS">NS</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox id="PE" />
-                <Label htmlFor="PE">PE</Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <Checkbox id="SK" />
-                <Label htmlFor="SK">SK</Label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col bg-[#2E2C38] border border-[#3F3D48] rounded-[32px] px-4 md:px-6 py-7 gap-3.5">
+        <div className="bg-[#2E2C38] border border-[#3F3D48] rounded-[32px] px-6 py-7 space-y-8">
           <div>
-            <h3 className="text-lg font-semibold leading-6 text-white">
-              Filters
-            </h3>
+            <h3 className="text-lg font-semibold text-white">Filters</h3>
           </div>
-          <div className="flex flex-col md:flex-row gap-1.75">
-            <div className="flex flex-col gap-2 md:min-w-45">
-              <h4 className="text-primary text-sm font-semibold">
-                Demographics
-              </h4>
-              <div className="flex flex-row flex-wrap md:flex-col  ">
-                <div className="flex items-center gap-3 px-1.75 py-2 ">
-                  <Checkbox id="Age" />
-                  <Label htmlFor="Age">Age</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Gender" />
-                  <Label htmlFor="Gender">Gender</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Income" />
-                  <Label htmlFor="Income">Income</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Education" />
-                  <Label htmlFor="Education">Education</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Household size" />
-                  <Label htmlFor="Household size">Household size</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Family stage" />
-                  <Label htmlFor="Family stage">Family stage</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Ethnic background" />
-                  <Label htmlFor="Ethnic background">Ethnic background</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Language" />
-                  <Label htmlFor="Language">Language</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Home ownership" />
-                  <Label htmlFor="Home ownership">Home ownership</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 md:min-w-45">
-              <h4 className="text-primary text-sm font-semibold">
-                Media habits
-              </h4>
-              <div className="flex flex-row flex-wrap md:flex-col  ">
-                <div className="flex items-center gap-3 px-1.75 py-2 ">
-                  <Checkbox id="TV" />
-                  <Label htmlFor="TV">TV</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Digital" />
-                  <Label htmlFor="Digital">Digital</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Radio" />
-                  <Label htmlFor="Radio">Radio</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Print" />
-                  <Label htmlFor="Print">Print</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Social" />
-                  <Label htmlFor="Social">Social</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Streaming" />
-                  <Label htmlFor="Streaming">Streaming</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Device used" />
-                  <Label htmlFor="Device used">Device used</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 md:min-w-45">
-              <h4 className="text-primary text-sm font-semibold">
+          <div className="w-full flex flex-row gap-4 flex-wrap md:gap-4">
+            <section className="w-full md:max-w-43">
+              <h4 className="text-primary font-semibold mb-3">Demographics</h4>
+              <CheckboxGroup
+                name="demographics"
+                control={form.control}
+                options={[
+                  "Age",
+                  "Gender",
+                  "Income",
+                  "Education",
+                  "Household size",
+                  "Family stage",
+                  "Ethnic background",
+                  "Language",
+                  "Home ownership",
+                ]}
+                isRow={false}
+              />
+            </section>
+
+            <section className="w-full md:max-w-43">
+              <h4 className="text-primary font-semibold mb-3">Media habits</h4>
+              <CheckboxGroup
+                name="mediaHabits"
+                control={form.control}
+                options={[
+                  "TV",
+                  "Digital",
+                  "Radio",
+                  "Print",
+                  "Social",
+                  "Streaming",
+                  "Device used",
+                ]}
+                isRow={false}
+              />
+            </section>
+
+            <section className="w-full md:max-w-43">
+              <h4 className="text-primary font-semibold mb-3">
                 Lifestyle and attitudes
               </h4>
-              <div className="flex flex-row flex-wrap md:flex-col  ">
-                <div className="flex items-center gap-3 px-1.75 py-2 ">
-                  <Checkbox id="Values" />
-                  <Label htmlFor="Values">Values</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Attitudes" />
-                  <Label htmlFor="Attitudes">Attitudes</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Motivations" />
-                  <Label htmlFor="Motivations">Motivations</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Lifestyle activities" />
-                  <Label htmlFor="Lifestyle activities">
-                    Lifestyle activities
-                  </Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Purchase drivers" />
-                  <Label htmlFor="Purchase drivers">Purchase drivers</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 md:min-w-45">
-              <h4 className="text-primary text-sm font-semibold">
-                Product usage
-              </h4>
-              <div className="flex flex-row flex-wrap md:flex-col  ">
-                <div className="flex items-center gap-3 px-1.75 py-2 ">
-                  <Checkbox id="Product usage" />
-                  <Label htmlFor="Product usage">Product usage</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Usage frequency" />
-                  <Label htmlFor="Usage frequency">Usage frequency</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Spending level" />
-                  <Label htmlFor="Spending level">Spending level</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Brand used" />
-                  <Label htmlFor="Brand used">Brand used</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Purchase intent" />
-                  <Label htmlFor="Purchase intent">Purchase intent</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 md:min-w-45">
-              <h4 className="text-primary text-sm font-semibold">
+              <CheckboxGroup
+                name="lifestyle"
+                control={form.control}
+                options={[
+                  "Values",
+                  "Attitudes",
+                  "Motivations",
+                  "Lifestyle activities",
+                  "Purchase drivers",
+                ]}
+                isRow={false}
+              />
+            </section>
+
+            <section className="w-full md:max-w-43">
+              <h4 className="text-primary font-semibold mb-3">Product usage</h4>
+              <CheckboxGroup
+                name="productUsage"
+                control={form.control}
+                options={[
+                  "Product usage",
+                  "Usage frequency",
+                  "Spending level",
+                  "Brand used",
+                  "Purchase intent",
+                ]}
+                isRow={false}
+              />
+            </section>
+
+            <section className="w-full md:max-w-43">
+              <h4 className="text-primary font-semibold mb-3">
                 Digital behaviour
               </h4>
-              <div className="flex flex-row flex-wrap md:flex-col  ">
-                <div className="flex items-center gap-3 px-1.75 py-2 ">
-                  <Checkbox id="Websites visited" />
-                  <Label htmlFor="Websites visited">Websites visited</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Apps used" />
-                  <Label htmlFor="Apps used">Apps used</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Time spend" />
-                  <Label htmlFor="Time spend">Time spend</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Visit frequency" />
-                  <Label htmlFor="Visit frequency">Visit frequency</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Device type" />
-                  <Label htmlFor="Device type">Device type</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 md:min-w-45">
-              <h4 className="text-primary text-sm font-semibold">
+              <CheckboxGroup
+                name="digitalBehaviour"
+                control={form.control}
+                options={[
+                  "Websites visited",
+                  "Apps used",
+                  "Time spent",
+                  "Visit frequency",
+                  "Device type",
+                ]}
+                isRow={false}
+              />
+            </section>
+
+            <section className="w-full md:max-w-43">
+              <h4 className="text-primary font-semibold mb-3">
                 Cultural and newcomer
               </h4>
-              <div className="flex flex-row flex-wrap md:flex-col  ">
-                <div className="flex items-center gap-3 px-1.75 py-2 ">
-                  <Checkbox id="Time in Canada" />
-                  <Label htmlFor="Time in Canada">Time in Canada</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Language at home" />
-                  <Label htmlFor="Language at home">Language at home</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Community group" />
-                  <Label htmlFor="Community group">Community group</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Language" />
-                  <Label htmlFor="Language">Language</Label>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 md:min-w-45">
-              <h4 className="text-primary text-sm font-semibold">Geography</h4>
-              <div className="flex flex-row flex-wrap md:flex-col  ">
-                <div className="flex items-center gap-3 px-1.75 py-2 ">
-                  <Checkbox id="Province" />
-                  <Label htmlFor="Province">Province</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="City" />
-                  <Label htmlFor="City">City</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Neighbourhood" />
-                  <Label htmlFor="Neighbourhood">Education</Label>
-                </div>
-                <div className="flex items-center gap-3 px-1.75 py-2">
-                  <Checkbox id="Postal code" />
-                  <Label htmlFor="Postal code">Postal code</Label>
-                </div>
-              </div>
-            </div>
+              <CheckboxGroup
+                name="cultural"
+                control={form.control}
+                options={[
+                  "Time in Canada",
+                  "Language at home",
+                  "Community group",
+                  "Language",
+                ]}
+                isRow={false}
+              />
+            </section>
+
+            <section className="w-full md:max-w-43">
+              <h4 className="text-primary font-semibold mb-3">Geography</h4>
+              <CheckboxGroup
+                name="geography"
+                control={form.control}
+                options={["Province", "City", "Neighbourhood", "Postal code"]}
+                isRow={false}
+              />
+            </section>
           </div>
         </div>
+
         <div className="flex justify-end">
-          <Button className="rounded-full px-10">Apply search</Button>
+          <Button type="submit" className="rounded-full px-10">
+            Apply search
+          </Button>
         </div>
-      </div>
-    </div>
+      </form>
+    </Form>
   );
 }

@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import LayoutHeader from "@/components/LayoutHeader";
 import clientLogo from "@/assets/Datalytica-logo-white.png";
 import Sidebar from "@/components/Sidebar";
+import { Toaster } from "sonner";
 
 type LayoutProps = {
   children?: React.ReactNode;
@@ -11,9 +12,9 @@ function Layout({ children }: LayoutProps) {
   const location = useLocation();
 
   return (
-    <div className="bg-primary-bg w-full min-h-screen pb-20">
+    <div className="bg-primary-bg w-full min-h-screen pb-8 md:pb-20">
       <LayoutHeader />
-      <section className="my-container py-12.5">
+      <section className="my-container py-6 md:pt-10 md:pb-6">
         <img
           src={clientLogo}
           alt="Brand Logo here."
@@ -24,10 +25,9 @@ function Layout({ children }: LayoutProps) {
         <section className="w-full max-w-fit ">
           <Sidebar activePath={location.pathname} />
         </section>
-        <section className="grow ">
-          {children ?? <Outlet />}
-        </section>
+        <section className="grow ">{children ?? <Outlet />}</section>
       </main>
+      <Toaster richColors position="top-right" />
     </div>
   );
 }

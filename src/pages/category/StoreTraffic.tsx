@@ -172,7 +172,6 @@ export default function StoreTraffic() {
                                     </linearGradient>
                                   </defs>
 
-                                  {/* X Axis */}
                                   <XAxis
                                     dataKey="name"
                                     tick={{ fill: "#ffffff", fontSize: 12 }}
@@ -181,7 +180,6 @@ export default function StoreTraffic() {
                                     }}
                                   />
 
-                                  {/* Left Y Axis: Revenue */}
                                   <YAxis
                                     yAxisId="left"
                                     domain={[0, 400000]}
@@ -192,7 +190,6 @@ export default function StoreTraffic() {
                                     tickFormatter={(v) => `$${v / 1000}K`}
                                   />
 
-                                  {/* Right Y Axis: Percentage */}
                                   <YAxis
                                     yAxisId="right"
                                     orientation="right"
@@ -221,7 +218,6 @@ export default function StoreTraffic() {
                                     }
                                   />
 
-                                  {/* Bars */}
                                   <Bar
                                     yAxisId="left"
                                     dataKey="revenue"
@@ -229,7 +225,6 @@ export default function StoreTraffic() {
                                     fill="#EC1A75"
                                   />
 
-                                  {/* Area under line */}
                                   <Area
                                     yAxisId="right"
                                     type="monotone"
@@ -238,7 +233,6 @@ export default function StoreTraffic() {
                                     fill="url(#area)"
                                   />
 
-                                  {/* Line */}
                                   <Line
                                     yAxisId="right"
                                     type="monotone"

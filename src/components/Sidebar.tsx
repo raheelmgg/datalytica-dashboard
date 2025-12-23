@@ -7,16 +7,22 @@ import { navItems, type NavItem } from "@/navigation/navItems";
 
 type SidebarProps = { activePath: string };
 
+/* ----------------------------------
+   Nav List
+----------------------------------- */
+
 function NavList({
   items,
   activePath,
   open,
   toggle,
+  onNavigate,
 }: {
   items: NavItem[];
   activePath: string;
   open: Record<string, boolean>;
   toggle: (key: string) => void;
+  onNavigate?: () => void;
 }) {
   return (
     <ul className="space-y-2">
@@ -24,6 +30,7 @@ function NavList({
         const isActive =
           item.href === activePath ||
           item.children?.some((c) => c.href === activePath);
+
         const hasChildren = !!item.children?.length;
         const isOpen = open[item.title] ?? false;
 
@@ -49,7 +56,11 @@ function NavList({
                 )}
               </button>
             ) : (
-              <Link to={item.href ?? "#"} className={rowClasses}>
+              <Link
+                to={item.href ?? "#"}
+                className={rowClasses}
+                onClick={onNavigate}
+              >
                 <span>{item.title}</span>
               </Link>
             )}
@@ -67,6 +78,7 @@ function NavList({
                     <li key={child.title}>
                       <Link
                         to={child.href ?? "#"}
+                        onClick={onNavigate}
                         className={cn(
                           "block py-1 text-sm hover:text-primary",
                           childActive &&
@@ -87,17 +99,23 @@ function NavList({
   );
 }
 
+/* ----------------------------------
+   Sidebar
+----------------------------------- */
+
 export default function Sidebar({ activePath }: SidebarProps) {
   const [open, setOpen] = useState<Record<string, boolean>>({});
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const toggle = (key: string) =>
     setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
 
-  // Ensure any section containing the active route is open
+  // Auto-open parent section for active route
   useEffect(() => {
     const parent = navItems.find((item) =>
       item.children?.some((child) => child.href === activePath)
     );
+
     if (parent) {
       setOpen((prev) =>
         prev[parent.title] ? prev : { ...prev, [parent.title]: true }
@@ -112,20 +130,22 @@ export default function Sidebar({ activePath }: SidebarProps) {
         activePath={activePath}
         open={open}
         toggle={toggle}
+        onNavigate={() => setMobileOpen(false)} // 👈 auto-close mobile
       />
     </nav>
   );
 
   return (
     <>
-      {/* Mobile hamburger */}
+      {/* Mobile Sidebar */}
       <div className="md:hidden p-2">
-        <Sheet>
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetTrigger asChild>
             <button type="button" aria-label="Open sidebar">
               <Menu className="h-6 w-6 text-white" />
             </button>
           </SheetTrigger>
+
           <SheetContent
             side="left"
             className="p-0 bg-[#2E2C38] [&>button]:text-white border-r-0"
@@ -135,7 +155,7 @@ export default function Sidebar({ activePath }: SidebarProps) {
         </Sheet>
       </div>
 
-      {/* Desktop sidebar */}
+      {/* Desktop Sidebar */}
       <aside className="hidden md:block max-w-64">{content}</aside>
     </>
   );
