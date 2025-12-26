@@ -12,46 +12,70 @@ type PreBuiltPrompt = {
   category: string;
 };
 
-const DEFAULT_TITLE = "Welcome Joan, what insight can we unlock today?";
+const DEFAULT_TITLE = "Welcome Joan, these are today’s reports";
 
 const PRE_BUILT_PROMPTS: PreBuiltPrompt[] = [
   {
-    id: "inventory-availability-finder",
-    title: "Inventory availability finder",
-    description: "Shows available inventory by market, network, or location.",
-    category: "executive",
-  },
-  {
-    id: "budget-date-planner",
-    title: "Budget and date planner",
-    description: "Builds a plan based on budget, location, and campaign dates.",
-    category: "executive",
-  },
-  {
-    id: "objective-based-plan-builder",
-    title: "Objective based plan builder",
+    id: "client-executive-summary",
+    title: "Client executive summary",
     description:
-      "Creates a plan aligned to awareness, conversion, or store visit lift.",
+      "Summarizes key results, notable changes, and performance drivers to support client reviews.",
     category: "executive",
   },
   {
-    id: "reach-frequency-optimizer",
-    title: "Reach and frequency optimizer",
+    id: "cross-channel-performance",
+    title: "Cross channel performance",
     description:
-      "Optimizes reach and frequency to reduce waste and extend coverage.",
+      "Provides a unified view of performance across paid media, analytics, and ecommerce data.",
+    category: "executive",
+  },
+  {
+    id: "attribution-outcome-analysis",
+    title: "Attribution and outcome analysis",
+    description:
+      "Connects media exposure to outcomes, including offline results when client data exists.",
+    category: "executive",
+  },
+  {
+    id: "campaign-pacing-spend",
+    title: "Campaign pacing and spend",
+    description:
+      "Tracks spend and delivery pacing to surface risks and issues before they impact clients.",
     category: "Analyst",
   },
   {
-    id: "performance-forecast-risk-checker",
-    title: "Performance forecast and risk checker",
-    description: "Forecasts delivery and flags risks before a plan goes live.",
-    category: "Analyst ",
+    id: "channel-contribution-analysis",
+    title: "Channel contribution analysis",
+    description:
+      "Shows how each channel contributes to outcomes, helping explain performance in context.",
+    category: "Analyst",
   },
   {
-    id: "network-location-tradeoff-advisor",
-    title: "Network and location trade off advisor",
+    id: "conversion-funnel-analysis",
+    title: "Conversion and funnel analysis",
     description:
-      "Compares spend options to show the best network and location mix.",
+      "Analyzes conversion behavior across channels to identify drop offs and efficiency gaps.",
+    category: "Analyst",
+  },
+  {
+    id: "ecommerce-performance-summary",
+    title: "Ecommerce performance summary",
+    description:
+      "Connects media performance to revenue, transactions, and product level outcomes.",
+    category: "Analyst",
+  },
+  {
+    id: "audience-geography-insights",
+    title: "Audience and geography insights",
+    description:
+      "Breaks down performance by audience segments and geographic markets for deeper context.",
+    category: "Analyst",
+  },
+  {
+    id: "trend-period-comparison",
+    title: "Trend and period comparison",
+    description:
+      "Compares performance across time periods to identify shifts, patterns, and anomalies.",
     category: "Analyst",
   },
 ];
@@ -63,7 +87,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function AiInsights() {
+export default function Marketing() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { prompt: "" },
@@ -81,21 +105,13 @@ export default function AiInsights() {
 
     setMode("active");
 
-    setAiResponse(`Store performance is mixed this period.
-      
-      Traffic is up 2.8%, driven by stronger afternoon visits.
-     
-      Trip conversion is down 0.4%, meaning more shoppers left without purchasing.
-      
-      Units per transaction declined slightly, showing weaker impulse attachment.
-     
-      Sales dollars rose 1.3% due to higher average selling price.
-      
-      Gross profit declined 8% from cost pressure and heavier promotions.
-     
-      Inventory on hand increased 2.2%, signaling slower sell-through.
-      
-      Focus on improving attachment in weaker stores, tightening promotions, and reducing slow-moving items to lift margin next period.
+    setAiResponse(`Cross channel performance this period shows results being driven by a combination of paid media efficiency, audience alignment, and downstream ecommerce behaviour rather than reliance on a single channel. Performance is strongest where channels work together, with paid media driving initial engagement, analytics data confirming sustained interest, and ecommerce activity reflecting follow through and conversion.
+
+Paid search and paid social continue to generate the highest volume of engagement, while display and video contribute incremental reach and assist earlier stage consideration. Analytics data indicates that users exposed across multiple channels demonstrate longer session duration and higher repeat visit rates compared to single channel exposure. This pattern suggests cumulative impact rather than channel substitution.
+
+Ecommerce performance aligns closely with cross channel exposure. Transactions and revenue are higher among users reached across two or more channels, with stronger conversion rates and higher average order value. Single channel exposure shows weaker conversion efficiency and lower downstream value.
+
+From an executive perspective, this view confirms that performance is being driven by channel coordination rather than isolated execution. Maintaining balanced investment across channels, with attention to how they reinforce one another, supports more consistent outcomes and reduces dependence on any single platform.
   `);
   };
 
@@ -167,15 +183,16 @@ export default function AiInsights() {
       {mode === "idle" && (
         <div
           id="promptSuggestions"
-          className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 md:max-w-300 mx-auto mt-auto"
+          className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 max-w-300 mx-auto"
         >
           {PRE_BUILT_PROMPTS.map((prompt) => (
             <div
               key={prompt.id}
               onClick={() => handleSuggestionClick(prompt)}
-              className="card ai-prompt-box cursor-pointer transition-shadow hover:shadow-lg"
+              className="card ai-prompt-box cursor-pointer transition-shadow hover:shadow-lg gap-y-3!"
             >
-              <span className="font-semibold text-primary text-[20px]">
+              <span className="text-[#6E6E7A] font-semibold text-[12px]">{prompt.category}</span>
+              <span className="font-normal text-primary text-[20px]">
                 {prompt.title}
               </span>
               <span className="text-white text-[14px] leading-6">

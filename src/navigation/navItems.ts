@@ -16,6 +16,13 @@ export const navItems: NavItem[] = [
     ],
   },
   {
+    title: "Media planning",
+    children: [
+      { title: "New Campaign", href: "/media-planning/new-campaign" },
+      { title: "Campaign", href: "/media-planning/campaign" },
+    ],
+  },
+  {
     title: "Category",
     children: [
       { title: "Store Traffic", href: "/category/store-traffic" },
@@ -28,6 +35,14 @@ export const navItems: NavItem[] = [
   },
   { title: "Brands", href: "/brands" },
   { title: "Consumer Insights", href: "/consumer-insights" },
-  { title: "Reports", href: "/reports" },
+  {
+    title: "Reports",
+    children: [
+      { title: "Marketing", href: "/reports/marketing" },
+      { title: "Media planning", href: "/reports/media-planning" },
+      { title: "Category", href: "/reports/category" },
+    ],
+  },
+  // { title: "Reports", href: "/reports" },
   { title: "AI insights", href: "/ai-insights" },
 ];

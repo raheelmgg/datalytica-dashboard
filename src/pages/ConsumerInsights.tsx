@@ -66,9 +66,17 @@ function CheckboxGroup({
           render={({ field }) => {
             const value: string[] = field.value || [];
             const checked = value.includes(option);
+            const isAddMobileCheckBox = option
+              .toLocaleLowerCase()
+              .includes("add mobile");
 
             return (
-              <FormItem className="flex items-center gap-3">
+              <FormItem
+                className={`flex items-center gap-3 ${
+                  isAddMobileCheckBox &&
+                  "border border-primary rounded-full px-5 py-1.5"
+                } `}
+              >
                 <FormControl>
                   <Checkbox
                     checked={checked}
@@ -81,7 +89,13 @@ function CheckboxGroup({
                     }}
                   />
                 </FormControl>
-                <FormLabel className="font-normal">{option}</FormLabel>
+                <FormLabel
+                  className={`font-normal peer-data-[state=checked]:text-white ${
+                    isAddMobileCheckBox && "text-white"
+                  }`}
+                >
+                  {option}
+                </FormLabel>
               </FormItem>
             );
           }}
@@ -90,10 +104,6 @@ function CheckboxGroup({
     </div>
   );
 }
-
-/* -----------------------------
-   Component
------------------------------- */
 
 export default function ConsumerInsights() {
   const form = useForm<FormValues>({
@@ -152,6 +162,7 @@ export default function ConsumerInsights() {
               "Transactional",
               "Loyalty",
               "CRM",
+              "Add mobile",
             ]}
             isRow={true}
           />

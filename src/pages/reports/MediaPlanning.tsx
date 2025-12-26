@@ -12,46 +12,70 @@ type PreBuiltPrompt = {
   category: string;
 };
 
-const DEFAULT_TITLE = "Welcome Joan, what insight can we unlock today?";
+const DEFAULT_TITLE = "Welcome Joan, these are today’s reports";
 
 const PRE_BUILT_PROMPTS: PreBuiltPrompt[] = [
   {
-    id: "inventory-availability-finder",
-    title: "Inventory availability finder",
-    description: "Shows available inventory by market, network, or location.",
-    category: "executive",
-  },
-  {
-    id: "budget-date-planner",
-    title: "Budget and date planner",
-    description: "Builds a plan based on budget, location, and campaign dates.",
-    category: "executive",
-  },
-  {
-    id: "objective-based-plan-builder",
-    title: "Objective based plan builder",
+    id: "premium-location-performance",
+    title: "Premium location performance",
     description:
-      "Creates a plan aligned to awareness, conversion, or store visit lift.",
+      "Identifies locations that outperform others based on traffic and audience quality.",
     category: "executive",
   },
   {
-    id: "reach-frequency-optimizer",
-    title: "Reach and frequency optimizer",
+    id: "visit-lift-impact",
+    title: "Visit lift impact",
     description:
-      "Optimizes reach and frequency to reduce waste and extend coverage.",
+      "Shows how exposure drove incremental store visits versus a control group.",
+    category: "executive",
+  },
+  {
+    id: "traffic-seasonality-trends",
+    title: "Traffic and seasonality trends",
+    description:
+      "Tracks traffic patterns over time to highlight peaks and seasonal behaviour.",
+    category: "executive",
+  },
+  {
+    id: "audience-profile-insights",
+    title: "Audience profile insights",
+    description:
+      "Reveals who is visiting locations, including key audience segments.",
     category: "Analyst",
   },
   {
-    id: "performance-forecast-risk-checker",
-    title: "Performance forecast and risk checker",
-    description: "Forecasts delivery and flags risks before a plan goes live.",
-    category: "Analyst ",
+    id: "demographic-overview",
+    title: "Demographic overview",
+    description:
+      "Breaks down age, income, household, and core demographic traits.",
+    category: "Analyst",
   },
   {
-    id: "network-location-tradeoff-advisor",
-    title: "Network and location trade off advisor",
+    id: "brand-category-affinity",
+    title: "Brand and category affinity",
     description:
-      "Compares spend options to show the best network and location mix.",
+      "Shows which brands and categories visitors are most likely to engage with.",
+    category: "Analyst",
+  },
+  {
+    id: "competitive-visitation",
+    title: "Competitive visitation",
+    description:
+      "Highlights competitor locations also visited by your audience.",
+    category: "Analyst",
+  },
+  {
+    id: "time-spent-analysis",
+    title: "Time spent analysis",
+    description:
+      "Measures how long visitors stay at locations to indicate engagement.",
+    category: "Analyst",
+  },
+  {
+    id: "top-visited-locations",
+    title: "Top visited locations",
+    description:
+      "Ranks locations by visitation and engagement to prioritise high value sites.",
     category: "Analyst",
   },
 ];
@@ -63,7 +87,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function AiInsights() {
+export default function MediaPlanning() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { prompt: "" },
@@ -81,21 +105,13 @@ export default function AiInsights() {
 
     setMode("active");
 
-    setAiResponse(`Store performance is mixed this period.
-      
-      Traffic is up 2.8%, driven by stronger afternoon visits.
-     
-      Trip conversion is down 0.4%, meaning more shoppers left without purchasing.
-      
-      Units per transaction declined slightly, showing weaker impulse attachment.
-     
-      Sales dollars rose 1.3% due to higher average selling price.
-      
-      Gross profit declined 8% from cost pressure and heavier promotions.
-     
-      Inventory on hand increased 2.2%, signaling slower sell-through.
-      
-      Focus on improving attachment in weaker stores, tightening promotions, and reducing slow-moving items to lift margin next period.
+    setAiResponse(`Premium locations continue to outperform the broader network, delivering higher quality exposure and more efficient visit outcomes this period. These locations generate stronger visit density, longer average dwell time, and more consistent daypart performance compared to standard locations.
+
+Visit activity across premium locations is up 3.1%, driven primarily by weekday afternoon and early evening traffic. These locations attract a higher share of commuters and repeat visitors, indicating stronger habitual behaviour and greater opportunity for frequency driven impact. Visit lift analysis shows premium locations delivering higher incremental lift versus control locations, confirming performance is driven by location quality rather than baseline traffic alone.
+
+Audience composition remains a key differentiator. Premium locations over index for higher income households and full-time workers, aligning well with brand awareness and consideration objectives. Brand and category affinity signals indicate visitors are more likely to engage in multi stop journeys, increasing overall exposure value.
+
+From a planning perspective, premium locations provide more predictable delivery, lower risk of underperformance, and stronger alignment with reach efficiency goals. Concentrating spend within these locations improves consistency and supports more confident forecasting.
   `);
   };
 
@@ -167,15 +183,18 @@ export default function AiInsights() {
       {mode === "idle" && (
         <div
           id="promptSuggestions"
-          className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 md:max-w-300 mx-auto mt-auto"
+          className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 max-w-300 mx-auto"
         >
           {PRE_BUILT_PROMPTS.map((prompt) => (
             <div
               key={prompt.id}
               onClick={() => handleSuggestionClick(prompt)}
-              className="card ai-prompt-box cursor-pointer transition-shadow hover:shadow-lg"
+              className="card ai-prompt-box cursor-pointer transition-shadow hover:shadow-lg gap-y-3!"
             >
-              <span className="font-semibold text-primary text-[20px]">
+              <span className="text-[#6E6E7A] font-semibold text-[12px]">
+                {prompt.category}
+              </span>
+              <span className="font-normal text-primary text-[20px]">
                 {prompt.title}
               </span>
               <span className="text-white text-[14px] leading-6">
