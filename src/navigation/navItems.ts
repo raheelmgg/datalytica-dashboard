@@ -19,7 +19,7 @@ export const navItems: NavItem[] = [
     title: "Media planning",
     children: [
       { title: "New Campaign", href: "/media-planning/new-campaign" },
-      { title: "Campaign", href: "/media-planning/campaign" },
+      { title: "Campaigns", href: "/media-planning/campaigns" },
     ],
   },
   {

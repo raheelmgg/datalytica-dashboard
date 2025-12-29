@@ -21,10 +21,10 @@ import ConsumerInsights from "./pages/ConsumerInsights";
 import AiInsights from "./pages/AiInsights";
 import NotFound from "./pages/NotFound";
 import NewCampaign from "./pages/media-planning/NewCampaign";
-import Campaign from "./pages/media-planning/Campaigns";
 import Marketing from "./pages/reports/Marketing";
 import MediaPlanning from "./pages/reports/MediaPlanning";
 import Category from "./pages/reports/Category";
+import Campaigns from "./pages/media-planning/Campaigns";
 
 const router = createBrowserRouter([
   {
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       { path: "marketing/email", element: <Email /> },
       // Media Planning DD
       { path: "media-planning/new-campaign", element: <NewCampaign /> },
-      { path: "media-planning/campaigns", element: <Campaign /> },
+      { path: "media-planning/campaigns", element: <Campaigns /> },
       // Category DD
       { path: "category/store-traffic", element: <StoreTraffic /> },
       { path: "category/basket-insights", element: <BasketInsights /> },
