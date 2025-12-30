@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, Menu } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -49,11 +49,12 @@ function NavList({
                 aria-expanded={isOpen}
               >
                 <span>{item.title}</span>
-                {isOpen ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
+                <ChevronDown
+                  className={cn(
+                    "h-4 w-4 transition-transform",
+                    isOpen && "rotate-180"
+                  )}
+                />
               </button>
             ) : (
               <Link
@@ -107,19 +108,20 @@ export default function Sidebar({ activePath }: SidebarProps) {
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const toggle = (key: string) =>
-    setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggle = (key: string) => {
+    setOpen((prev) => {
+      const isCurrentlyOpen = prev[key];
+      return isCurrentlyOpen ? {} : { [key]: true };
+    });
+  };
 
-  // Auto-open parent section for active route
   useEffect(() => {
     const parent = navItems.find((item) =>
       item.children?.some((child) => child.href === activePath)
     );
 
     if (parent) {
-      setOpen((prev) =>
-        prev[parent.title] ? prev : { ...prev, [parent.title]: true }
-      );
+      setOpen({ [parent.title]: true });
     }
   }, [activePath]);
 

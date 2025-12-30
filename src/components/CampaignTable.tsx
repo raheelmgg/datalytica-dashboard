@@ -6,8 +6,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+// import { Badge } from "@/components/ui/badge";
+// import { cn } from "@/lib/utils";
 
 type CampaignStatus = "Active" | "Completed" | "Saved";
 
@@ -157,16 +157,16 @@ const campaigns: Campaign[] = [
 ];
 
 export default function CampaignTable() {
-  const statusStyles: Record<CampaignStatus, string> = {
-    Active: "bg-emerald-500/15 text-emerald-400",
-    Completed: "bg-sky-500/15 text-sky-400",
-    Saved: "bg-muted text-black",
-  };
+  // const statusStyles: Record<CampaignStatus, string> = {
+  //   Active: "bg-emerald-500/15 text-emerald-400",
+  //   Completed: "bg-sky-500/15 text-sky-400",
+  //   Saved: "bg-muted text-black",
+  // };
 
   return (
     <div className="relative ">
-      <Table className="text-white ">
-        <TableHeader className="bg-[#2E2C38]">
+      <Table className="text-white">
+        <TableHeader className="">
           {/* ROW 1 */}
           <TableRow>
             <TableHead
@@ -253,47 +253,53 @@ export default function CampaignTable() {
                 : 0;
 
             return (
-              <TableRow key={c.name} className="hover:bg-white/5 transition">
-                <TableCell className="font-medium bg-[#2E2C38] border-2 border-[#3F3D48]">
+              <TableRow key={c.name} className="">
+                <TableCell className="border-2 border-[#3F3D48]">
                   {c.name}
                 </TableCell>
 
-                <TableCell className="bg-[#2E2C38] border-2 border-[#3F3D48]">
+                {/* <TableCell className="bg-[#2E2C38] border-2 border-[#3F3D48]">
                   <Badge className={statusStyles[c.status]}>{c.status}</Badge>
-                </TableCell>
+                </TableCell> */}
 
-                <TableCell className="bg-[#2E2C38] border-2 border-[#3F3D48]">
+                <TableCell className="border-2 border-[#3F3D48]">
+                  {c.status}
+                </TableCell>
+                <TableCell className="border-2 border-[#3F3D48]">
                   {c.startDate}
                 </TableCell>
-                <TableCell className="bg-[#2E2C38] border-2 border-[#3F3D48]">
+                <TableCell className="border-2 border-[#3F3D48]">
                   {c.endDate}
                 </TableCell>
 
-                <TableCell className="text-center bg-[#2E2C38] border-2 border-[#3F3D48]">
+                <TableCell className="text-center border-2 border-[#3F3D48]">
                   {c.mediaUnits.toLocaleString()}
                 </TableCell>
 
-                <TableCell className="text-center bg-[#2E2C38] border-2 border-[#3F3D48]">
+                <TableCell className="text-center border-2 border-[#3F3D48]">
                   $ {c.budgetPlanned.toLocaleString()}
                 </TableCell>
 
-                <TableCell className="text-center bg-[#2E2C38] border-2 border-[#3F3D48]">
+                <TableCell className="text-center border-2 border-[#3F3D48]">
                   {c.budgetSpent
                     ? `$ ${c.budgetSpent.toLocaleString()}`
                     : "$ -"}
                 </TableCell>
 
-                <TableCell className="text-center bg-[#2E2C38] border-2 border-[#3F3D48]">
+                <TableCell className="text-center border-2 border-[#3F3D48]">
                   {c.impressionsEstimated.toFixed(1)} M
                 </TableCell>
 
-                <TableCell className="text-center bg-[#2E2C38] border-2 border-[#3F3D48]">
+                <TableCell className="text-center border-2 border-[#3F3D48]">
                   {c.impressionsDelivered.toFixed(1)} M
                 </TableCell>
+                <TableCell className="text-center border-2 border-[#3F3D48]">
+                  {percent}
+                </TableCell>
 
-                <TableCell
+                {/* <TableCell
                   className={cn(
-                    "text-center font-semibold bg-[#2E2C38] border-2 border-[#3F3D48]",
+                    "text-center font-semibold border-2 border-[#3F3D48]",
                     percent >= 100
                       ? "text-emerald-400"
                       : percent >= 60
@@ -302,7 +308,7 @@ export default function CampaignTable() {
                   )}
                 >
                   {percent} %
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             );
           })}

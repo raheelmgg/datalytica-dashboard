@@ -55,9 +55,8 @@ export default function Campaigns() {
   ];
   return (
     <section className="w-full flex flex-col gap-y-7">
-      <div>asdkojiuhn</div>
       <div className="w-full flex flex-col gap-5">
-        <div className="card w-full max-w-full">
+        <div className="w-full max-w-full">
           <div className="cardBody grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-y-4 md:gap-x-7">
             {newCampaignsKPIs.map((kpi) => (
               <div key={kpi.title}>
@@ -68,7 +67,6 @@ export default function Campaigns() {
         </div>
         <div className="card w-full max-w-full">
           <CampaignTable />
-
         </div>
       </div>
     </section>
