@@ -12,7 +12,7 @@ function Layout({ children }: LayoutProps) {
   const location = useLocation();
 
   return (
-    <div className="bg-primary-bg w-full min-h-screen pb-8 md:pb-20">
+    <div className="bg-primary-bg w-full min-h-screen pb-1">
       <LayoutHeader />
       <section className="my-container py-6 md:pt-10 md:pb-6">
         <img

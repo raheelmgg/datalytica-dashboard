@@ -179,7 +179,7 @@ function CheckboxGroup({
                   />
                 </FormControl>
                 <FormLabel
-                  className={`font-normal peer-data-[state=checked]:text-white ${
+                  className={`font-normal peer-data-[state=checked]:text-white peer-hover:text-white transition-all ${
                     isAddMobile ? "text-white" : ""
                   }`}
                 >

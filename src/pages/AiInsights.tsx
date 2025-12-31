@@ -56,7 +56,6 @@ const PRE_BUILT_PROMPTS: PreBuiltPrompt[] = [
   },
 ];
 
-
 const formSchema = z.object({
   prompt: z.string().min(1, "Prompt is required"),
 });

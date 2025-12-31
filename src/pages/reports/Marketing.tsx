@@ -80,7 +80,6 @@ const PRE_BUILT_PROMPTS: PreBuiltPrompt[] = [
   },
 ];
 
-
 const formSchema = z.object({
   prompt: z.string().min(1, "Prompt is required"),
 });
@@ -191,7 +190,9 @@ From an executive perspective, this view confirms that performance is being driv
               onClick={() => handleSuggestionClick(prompt)}
               className="card ai-prompt-box cursor-pointer transition-shadow hover:shadow-lg gap-y-3!"
             >
-              <span className="text-[#6E6E7A] font-semibold text-[12px]">{prompt.category}</span>
+              <span className="text-[#6E6E7A] font-semibold text-[12px]">
+                {prompt.category}
+              </span>
               <span className="font-normal text-primary text-[20px]">
                 {prompt.title}
               </span>

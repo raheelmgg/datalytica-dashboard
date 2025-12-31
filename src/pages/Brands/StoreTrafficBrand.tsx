@@ -1,9 +1,9 @@
 import PagePlaceholder from "../PagePlaceholder";
 
-export default function PriceMargin() {
+export default function StoreTrafficBrand() {
   return (
     <PagePlaceholder
-      title="Category • Basket Insights"
+      title="Brands • Price and Margin"
       description="Price architecture, margin health, and elasticity checkpoints."
     />
   );

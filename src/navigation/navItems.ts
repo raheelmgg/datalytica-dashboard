@@ -33,7 +33,19 @@ export const navItems: NavItem[] = [
       { title: "Inventory Health", href: "/category/inventory-health" },
     ],
   },
-  { title: "Brands", href: "/brands" },
+  // { title: "Brands", href: "/brands" },
+  {
+    title: "Brands",
+    children: [
+      { title: "Store Traffic", href: "/brands/store-traffic" },
+      { title: "Basket Insights", href: "/brands/basket-insights" },
+      { title: "Category Performance", href: "/brands/category-performance" },
+      { title: "Promo Performance", href: "/brands/promo-performance" },
+      { title: "Price and Margin", href: "/brands/price-margin" },
+      { title: "Inventory Health", href: "/brands/inventory-health" },
+    ],
+  },
+
   { title: "Consumer Insights", href: "/consumer-insights" },
   {
     title: "Reports",

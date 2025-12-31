@@ -10,12 +10,14 @@ import Dooh from "./pages/marketing/Dooh";
 import Social from "./pages/marketing/Social";
 import Email from "./pages/marketing/Email";
 import StoreTraffic from "./pages/category/StoreTraffic";
+import StoreTrafficBrand from "./pages/Brands/StoreTrafficBrand";
 import BasketInsights from "./pages/category/BasketInsights";
+import BasketInsightsBrand from "./pages/Brands/BasketInsightsBrand";
 import CategoryPerformance from "./pages/category/CategoryPerformance";
 import PromoPerformance from "./pages/category/PromoPerformance";
 import PriceMargin from "./pages/category/PriceMargin";
 import InventoryHealth from "./pages/category/InventoryHealth";
-import Brands from "./pages/Brands";
+// import Brands from "./pages/Brands";
 import ConsumerInsights from "./pages/ConsumerInsights";
 // import Reports from "./pages/Reports";
 import AiInsights from "./pages/AiInsights";
@@ -25,6 +27,10 @@ import Marketing from "./pages/reports/Marketing";
 import MediaPlanning from "./pages/reports/MediaPlanning";
 import Category from "./pages/reports/Category";
 import Campaigns from "./pages/media-planning/Campaigns";
+import CategoryPerformanceBrand from "./pages/Brands/CategoryPerformanceBrand";
+import PromoPerformanceBrand from "./pages/Brands/PromoPerformanceBrand";
+import PriceMarginBrand from "./pages/Brands/PriceMarginBrand";
+import InventoryHealthBrand from "./pages/Brands/InventoryHealthBrand";
 
 const router = createBrowserRouter([
   {
@@ -51,7 +57,19 @@ const router = createBrowserRouter([
       { path: "category/promo-performance", element: <PromoPerformance /> },
       { path: "category/price-margin", element: <PriceMargin /> },
       { path: "category/inventory-health", element: <InventoryHealth /> },
-      { path: "brands", element: <Brands /> },
+      // Brands DD
+      // { path: "brands", element: <Brands /> },
+      { path: "brands/store-traffic", element: <StoreTrafficBrand /> },
+      { path: "brands/basket-insights", element: <BasketInsightsBrand /> },
+      {
+        path: "brands/category-performance",
+        element: <CategoryPerformanceBrand />,
+      },
+      { path: "brands/promo-performance", element: <PromoPerformanceBrand /> },
+      { path: "brands/price-margin", element: <PriceMarginBrand /> },
+      { path: "brands/inventory-health", element: <InventoryHealthBrand /> },
+      { path: "brands/basket-insights", element: <BasketInsightsBrand /> },
+
       { path: "consumer-insights", element: <ConsumerInsights /> },
       // Reports DD
       { path: "reports/marketing", element: <Marketing /> },
