@@ -113,7 +113,7 @@ export default function Dooh() {
     <section className="w-full flex flex-col gap-y-7">
       <PageHeader title="DOOH campaigns" chips={true} />
       <div className="w-full flex flex-col md:flex-row gap-5">
-        <div className="card w-full max-w-[100%] md:max-w-[58%]">
+        <div className="card w-full max-w-full md:max-w-[58%]">
           <CardHeader title="Dashboard" />
           <div className="cardBody grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-y-4 md:gap-x-7">
             {doohKPIs.map((kpi) => (
@@ -128,7 +128,7 @@ export default function Dooh() {
               onClose={() => setSelectedKpi(null)}
               title={`KPI deep dive - ${selectedKpi.title}`}
             >
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 overflow-y-scroll scrollbar">
                 <div className="card">
                   <CardHeader title="" />
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3 ">
@@ -138,7 +138,7 @@ export default function Dooh() {
                   </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row gap-5 ">
-                  <div className="w-full max-w-[100%] md:max-w-[58%] flex flex-col gap-3">
+                  <div className="w-full max-w-full md:max-w-[58%] flex flex-col gap-3">
                     <div className="card">
                       <div className="flex flex-col md:flex-row justify-between gap-x-10">
                         <div className="w-full max-w-100">

@@ -1,124 +1,111 @@
-import PageHeader from "@/components/home/PageHeader";
-import { storeTrafficKpi } from "../../../allJSONs";
 import CardHeader from "@/components/CardHeader";
-import DetailBox from "@/components/ui/DetailBox";
 import DashboardModal from "@/components/DashboardModal";
-import {
-  ResponsiveContainer,
-  ComposedChart,
-  Bar,
-  Area,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
+import PageHeader from "@/components/home/PageHeader";
+import DetailBox from "@/components/ui/DetailBox";
 import { Progress } from "@/components/ui/progress";
-import AiInlineRecommendation from "@/components/ui/AiInlineRecommendation";
+import type { DashboardKpi } from "@/types";
+import { marketingKPIs } from "../../../allJSONs";
 import {
   DollarSignIcon,
   InfoIcon,
   LightbulbIcon,
   SearchIcon,
-  TrendingDown,
   TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
-import type { DashboardKpi } from "@/types";
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import AiInlineRecommendation from "@/components/ui/AiInlineRecommendation";
 
-export default function StoreTraffic() {
+export default function Index() {
   const [selectedKpi, setSelectedKpi] = useState<DashboardKpi | null>(null);
   const performanceByRegion = [
-    { region: "Ontario", progress: 100, change: "+ 4.1%" },
-    { region: "British Columbia", progress: 55, change: "+ 2.2%" },
-    { region: "Manitoba", progress: 32, change: "+1.5%" },
-    { region: "Alberta", progress: 22, change: "+0.9%" },
+    { region: "Los Angeles", progress: 100, change: "+ 4.3%" },
+    { region: "New York", progress: 50, change: "+ 3.6%" },
+    { region: "Florida", progress: 30, change: "+1.4%" },
+    { region: "Arizona", progress: 10, change: "+0.9%" },
   ];
-  const chartData = [
-    { name: "week 1", revenue: 260000, rate: 0.28 },
-    { name: "week 2", revenue: 320000, rate: 0.35 },
-    { name: "week 3", revenue: 290000, rate: 0.5 },
-    { name: "week 4", revenue: 270000, rate: 0.62 },
-    { name: "week 5", revenue: 310000, rate: 0.75 },
-    { name: "week 6", revenue: 260000, rate: 0.82 },
-  ];
-  const threeKpis = [
-    {
-      title: "Inventory coverage",
-      before: "",
-      value: "22",
-      suffix: "days",
-      change: "LY + 1.3%",
-      tooltipMsg: "",
-    },
-    {
-      title: "Unit velocity",
-      before: "",
-      value: "62",
-      suffix: "u/week",
-      change: "LY + 2.2%",
-      tooltipMsg: "",
-    },
-    {
-      title: "Store lift rate",
-      before: "$",
-      value: "41.2",
-      suffix: "k",
-      change: "LY + 3.1%",
-      tooltipMsg: "",
-    },
-  ];
+const chartData = [
+  { name: "jan", value: 7.0 },
+  { name: "feb", value: 9.0 },
+  { name: "mar", value: 12.0 },
+  { name: "apr", value: 15.0 },
+  { name: "may", value: 20.0 },
+  { name: "jun", value: 25.0 },
+];
+
   const kpiDeepDive = [
     {
-      title: "Sales",
+      title: "Engagement lift",
       before: "",
-      value: "42.8",
-      suffix: "M",
-      change: "LY + 1.4%",
-      tooltipMsg: "",
-    },
-    {
-      title: "Sales units",
-      before: "",
-      value: "1.92",
-      suffix: "M units",
-      change: "LY - 1.8%",
-      tooltipMsg: "",
-    },
-    {
-      title: "Sales per store",
-      before: "",
-      value: "41.2",
-      suffix: "K",
-      change: "LY + 3.1%",
-      tooltipMsg: "",
-    },
-    {
-      title: "",
-      before: "",
-      value: "1.24",
-      suffix: "",
-      change: "LY - 0.4%",
-      tooltipMsg: "",
-    },
-    {
-      title: "Promo lift on sales",
-      before: "",
-      value: "7.1",
+      value: "19.6",
       suffix: "%",
-      change: "LY + 2.9%",
-      tooltipMsg: "",
+      change: "+ 4.2%",
+      tooltipMsg: "Increase in audience engagement driven by campaign exposure",
     },
+    {
+      title: "Engagement rate",
+      before: "",
+      value: "1.12",
+      suffix: "%",
+      change: "+ 6.4%",
+      tooltipMsg: "Percentage of impressions that resulted in user engagement",
+    },
+    {
+      title: "Post exposure visits",
+      before: "",
+      value: "612",
+      suffix: "K",
+      change: "- 2.1%",
+      tooltipMsg: "Number of location visits occurring after ad exposure",
+    },
+    {
+      title: "Assisted conversion rate",
+      before: "",
+      value: "3.6",
+      suffix: "%",
+      change: "+ 1.8%",
+      tooltipMsg:
+        "Conversions influenced by the campaign but not directly attributed",
+    },
+    {
+      title: "Cost per engagement",
+      before: "",
+      value: "3.14",
+      suffix: "$",
+      change: "- 2.7%",
+      tooltipMsg: "Average cost incurred for each engagement action",
+    },
+  ];
+
+  const funnelSteps = [
+    { label: "Impressions", value: "186.7M" },
+    { label: "Engagement", value: "2.09M" },
+    { label: "Consideration", value: "412K" },
+    { label: "visits", value: "612K" },
+    { label: "Loyalty", value: "48K" },
+  ];
+  const gradients = [
+    "linear-gradient(135deg, #ff8cc3, #ff4b9a)",
+    "linear-gradient(135deg, #ff6fb0, #ff3388)",
+    "linear-gradient(135deg, #ff5fa2, #ff1f7a)",
+    "linear-gradient(135deg, #ff4b9a, #e91e63)",
+    "linear-gradient(135deg, #ff3388, #d81b60)",
   ];
   return (
     <section className="w-full flex flex-col gap-y-7">
-      <PageHeader title="Store traffic" chips={true} />
+      <PageHeader title="DOOH campaigns" chips={true} />
       <div className="w-full flex flex-col md:flex-row gap-5">
         <div className="card w-full max-w-full md:max-w-[58%]">
           <CardHeader title="Dashboard" />
           <div className="cardBody grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-y-4 md:gap-x-7">
-            {storeTrafficKpi.map((kpi) => (
+            {marketingKPIs.map((kpi) => (
               <div key={kpi.title} onClick={() => setSelectedKpi(kpi)}>
                 <DetailBox kpi={kpi} tooltipMsg={kpi.tooltipMsg} />
               </div>
@@ -130,7 +117,7 @@ export default function StoreTraffic() {
               onClose={() => setSelectedKpi(null)}
               title={`KPI deep dive - ${selectedKpi.title}`}
             >
-              <div className="flex flex-col gap-4 overflow-y-scroll scrollbar">
+              <div className="flex flex-col gap-4">
                 <div className="card">
                   <CardHeader title="" />
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3 ">
@@ -150,7 +137,7 @@ export default function StoreTraffic() {
                             </h3>
                             <div className="w-full">
                               <ResponsiveContainer width="100%" height={230}>
-                                <ComposedChart data={chartData}>
+                                <AreaChart data={chartData}>
                                   <defs>
                                     <linearGradient
                                       id="area"
@@ -179,77 +166,31 @@ export default function StoreTraffic() {
                                       stroke: "rgba(255,255,255,0.4)",
                                     }}
                                   />
-
                                   <YAxis
-                                    yAxisId="left"
-                                    domain={[0, 400000]}
-                                    tick={{ fill: "#ffffff", fontSize: 12 }}
-                                    axisLine={{
-                                      stroke: "rgba(255,255,255,0.4)",
-                                    }}
-                                    tickFormatter={(v) => `$${v / 1000}K`}
-                                  />
-
-                                  <YAxis
-                                    yAxisId="right"
-                                    orientation="right"
                                     domain={[0, 1]}
+                                    tickFormatter={(v) => `${v}%`}
                                     tick={{ fill: "#ffffff", fontSize: 12 }}
                                     axisLine={{
                                       stroke: "rgba(255,255,255,0.4)",
                                     }}
-                                    tickFormatter={(v) => `${v}%`}
                                   />
-
-                                  <CartesianGrid
-                                    stroke="rgba(255,255,255,0.08)"
-                                    strokeDasharray="4 4"
-                                    vertical={false}
-                                  />
-
-                                  <Tooltip
-                                    formatter={(value, name) =>
-                                      name === "revenue"
-                                        ? [
-                                            `$${value?.toLocaleString()}`,
-                                            "Revenue",
-                                          ]
-                                        : [`${value}%`, "Rate"]
-                                    }
-                                  />
-
-                                  <Bar
-                                    yAxisId="left"
-                                    dataKey="revenue"
-                                    barSize={18}
-                                    fill="#EC1A75"
-                                  />
+                                  <Tooltip formatter={(v) => `${v}%`} />
 
                                   <Area
-                                    yAxisId="right"
                                     type="monotone"
-                                    dataKey="rate"
-                                    stroke="none"
-                                    fill="url(#area)"
-                                  />
-
-                                  <Line
-                                    yAxisId="right"
-                                    type="monotone"
-                                    dataKey="rate"
+                                    dataKey="value"
                                     stroke="#EC1A75"
+                                    fill="url(#area)"
                                     strokeWidth={2}
-                                    dot={false}
-                                    activeDot={{ r: 4 }}
                                   />
-                                </ComposedChart>
+                                </AreaChart>
                               </ResponsiveContainer>
                             </div>
                           </div>
                         </div>
                         <div className=" grow">
                           <CardHeader title="Performance by region" />
-                          <div className="flex flex-col gap-y-3.5 mt-4 md:mt-8">
+                          <div className="flex flex-col gap-y-3 mt-4 md:mt-8">
                             {performanceByRegion.map((data, _) => (
                               <div
                                 className="w-full flex flex-col gap-2"
@@ -272,10 +213,28 @@ export default function StoreTraffic() {
                     </div>
                     <div className="card">
                       <CardHeader title="Customer journey impact" />
-                      <div className="flex flex-col md:flex-row justify-between gap-4">
-                        {threeKpis.map((kpi, _) => {
+                      <div className="flex flex-col md:flex-row gap-2">
+                        {funnelSteps.map((step, index) => {
+                          const isFirst = index === 0;
                           return (
-                            <DetailBox kpi={kpi} tooltipMsg={kpi.tooltipMsg} />
+                            <div
+                              key={step.label}
+                              className={`relative flex flex-col justify-center text-white bg-primary  w-full items-center *:flex-1 py-3 ml-0 md:-ml-4.5 ${
+                                isFirst
+                                  ? "clip-chevron-first rounded-md"
+                                  : "clip-chevron rounded-md md:rounded-none"
+                              }`}
+                              style={{
+                                background: gradients[index % gradients.length],
+                              }}
+                            >
+                              <span className="text-[16px] opacity-90">
+                                {step.label}
+                              </span>
+                              <span className="text-[28px] font-bold">
+                                {step.value}
+                              </span>
+                            </div>
                           );
                         })}
                       </div>
@@ -286,38 +245,28 @@ export default function StoreTraffic() {
                     <div className="flex flex-col gap-y-5">
                       <AiInlineRecommendation
                         Icon={TrendingUp}
-                        text="Sales lift driven mainly by price strength"
+                        text="Engagement Lift up 6.1% over the last 30 days, driven by higher engagement quality rather than increased exposure."
                         recommendationType="positive"
                       />
                       <AiInlineRecommendation
                         Icon={TrendingUp}
-                        text="Unit softness shows lighter shopper demand"
+                        text="Los Angeles continues to outperform all regions, exceeding average engagement lift by 2.4 points."
                         recommendationType="positive"
                       />
 
                       <AiInlineRecommendation
-                        Icon={TrendingDown}
-                        text="Stores performing above last year across most regions​"
-                        recommendationType="negative"
-                      />
-                      <AiInlineRecommendation
                         Icon={LightbulbIcon}
-                        text="Lower attachment suggests fewer impulse add ons​​"
+                        text="Florida overperformance aligns with declining post exposure visits and elevated frequency."
                         recommendationType="positive"
                       />
                       <AiInlineRecommendation
                         Icon={LightbulbIcon}
-                        text="Promos are driving meaningful incremental volume​"
-                        recommendationType="positive"
-                      />
-                      <AiInlineRecommendation
-                        Icon={LightbulbIcon}
-                        text="Inventory holding longer as sell through slows​​"
+                        text="Shift 8 to 12% of spend from Florida into Los Angeles and New York to maximise engagement efficiency.​"
                         recommendationType="positive"
                       />
                       <AiInlineRecommendation
                         Icon={InfoIcon}
-                        text="Steady weekly movement signals stable base demand​​​"
+                        text="Rotate creative more frequently in Florida to reduce engagement fatigue."
                         recommendationType="positive"
                       />
                     </div>
@@ -331,38 +280,53 @@ export default function StoreTraffic() {
           <CardHeader title="AI insights & Recommendations" />
           <div className="flex flex-col gap-y-5">
             <AiInlineRecommendation
-              Icon={TrendingUp}
-              text="Revenue up from higher selling price, not stronger demand​"
+              Icon={InfoIcon}
+              text="Reallocate spend to high attention environments"
               recommendationType="positive"
             />
             <AiInlineRecommendation
-              Icon={TrendingDown}
-              text="Unit volume down, softer consumer pull​"
-              recommendationType="negative"
+              Icon={LightbulbIcon}
+              text="Pair DOOH with mobile follow through"
+              recommendationType="positive"
             />
             <AiInlineRecommendation
-              Icon={TrendingDown}
-              text="Units per transaction down, weaker attachment​​"
-              recommendationType="negative"
-            />
-            <AiInlineRecommendation
-              Icon={DollarSignIcon}
-              text="Gross profit dollars down, cost pressure rising"
-              recommendationType="negative"
-            />
-            <AiInlineRecommendation
-              Icon={DollarSignIcon}
-              text="Gross profit rate down, promotions outweigh price gains​"
-              recommendationType="negative"
-            />
-            <AiInlineRecommendation
-              recommendationType="negative"
               Icon={InfoIcon}
-              text="Inventory up slightly, slower sell through​"
+              text="Shoppers notice the media, but downstream actions lag"
+              recommendationType="positive"
+            />
+            <AiInlineRecommendation
+              Icon={InfoIcon}
+              text="Optimise video for early impact"
+              recommendationType="positive"
+            />
+            <AiInlineRecommendation
+              Icon={TrendingUp}
+              text="Reach is expanding faster than efficiency"
+              recommendationType="positive"
+            />
+            <AiInlineRecommendation
+              Icon={TrendingUp}
+              text="Engagement quality improving despite video softness"
+              recommendationType="positive"
+            />
+            <AiInlineRecommendation
+              Icon={DollarSignIcon}
+              text="Cost pressure tied to premium inventory mix"
+              recommendationType="positive"
             />
             <AiInlineRecommendation
               Icon={SearchIcon}
-              text="Overall, price lift hides weakness in volume​"
+              text="Targeting remains accurate at scale"
+              recommendationType="positive"
+            />
+            <AiInlineRecommendation
+              Icon={LightbulbIcon}
+              text="Shift optimisation focus to mid funnel signals"
+              recommendationType="positive"
+            />
+            <AiInlineRecommendation
+              Icon={InfoIcon}
+              text="Tighten frequency in lower performing segments"
               recommendationType="positive"
             />
           </div>

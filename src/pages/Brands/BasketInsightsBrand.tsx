@@ -64,21 +64,21 @@ export default function BasketInsightsBrand() {
   ];
   const kpiDeepDive = [
     {
-      title: "Basket spend",
+      title: "High value basket share",
       before: "$",
-      value: "19.40",
+      value: "18.4",
       suffix: "",
-      change: "LY + 3.2%",
-      tooltipMsg: "lorem Ipsum",
+      change: "LY + 1.2%",
+      tooltipMsg: "",
     },
 
     {
-      title: "Spend by daypart",
+      title: "Promo week spend",
       before: "$",
-      value: "21.80",
+      value: "22.70",
       suffix: "",
-      change: "LY + 2.9%",
-      tooltipMsg: "lorem Ipsum",
+      change: "LY + 4.4%",
+      tooltipMsg: "",
     },
 
     {
@@ -128,7 +128,7 @@ export default function BasketInsightsBrand() {
               onClose={() => setSelectedKpi(null)}
               title={`KPI deep dive - ${selectedKpi.title}`}
             >
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 overflow-y-scroll scrollbar">
                 <div className="card">
                   <CardHeader title="" />
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3 ">
@@ -138,7 +138,7 @@ export default function BasketInsightsBrand() {
                   </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row gap-5 ">
-                  <div className="w-full max-w-[100%] md:max-w-[58%] flex flex-col gap-3">
+                  <div className="w-full max-w-full md:max-w-[58%] flex flex-col gap-3">
                     <div className="card">
                       <div className="flex flex-col md:flex-row justify-between gap-x-10">
                         <div className="w-full max-w-100">
@@ -322,7 +322,6 @@ export default function BasketInsightsBrand() {
               text="Shift promo windows to afternoon and evening"
               recommendationType="positive"
             />
-           
           </div>
         </div>
       </div>

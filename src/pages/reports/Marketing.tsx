@@ -1,6 +1,8 @@
+import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -118,33 +120,46 @@ From an executive perspective, this view confirms that performance is being driv
     setMode("active");
 
     // Simulated AI response (replace with real API later)
-    setAiResponse(`Store performance is mixed this period.
-      
-      Traffic is up 2.8%, driven by stronger afternoon visits.
-     
-      Trip conversion is down 0.4%, meaning more shoppers left without purchasing.
-      
-      Units per transaction declined slightly, showing weaker impulse attachment.
-     
-      Sales dollars rose 1.3% due to higher average selling price.
-      
-      Gross profit declined 8% from cost pressure and heavier promotions.
-     
-      Inventory on hand increased 2.2%, signaling slower sell-through.
-      
-      Focus on improving attachment in weaker stores, tightening promotions, and reducing slow-moving items to lift margin next period.`);
+    setAiResponse(`Cross channel performance this period shows results being driven by a combination of paid media efficiency, audience alignment, and downstream ecommerce behaviour rather than reliance on a single channel. Performance is strongest where channels work together, with paid media driving initial engagement, analytics data confirming sustained interest, and ecommerce activity reflecting follow through and conversion.
+
+Paid search and paid social continue to generate the highest volume of engagement, while display and video contribute incremental reach and assist earlier stage consideration. Analytics data indicates that users exposed across multiple channels demonstrate longer session duration and higher repeat visit rates compared to single channel exposure. This pattern suggests cumulative impact rather than channel substitution.
+
+Ecommerce performance aligns closely with cross channel exposure. Transactions and revenue are higher among users reached across two or more channels, with stronger conversion rates and higher average order value. Single channel exposure shows weaker conversion efficiency and lower downstream value.
+
+From an executive perspective, this view confirms that performance is being driven by channel coordination rather than isolated execution. Maintaining balanced investment across channels, with attention to how they reinforce one another, supports more consistent outcomes and reduces dependence on any single platform.
+  `);
 
     console.log("Submitted prompt:", values.prompt);
   };
 
   return (
     <div className="flex flex-col gap-4 md:gap-9 max-w-full md:mx-auto px-1 md:px-4">
-      <h2
-        id="chatName"
-        className="text-xl md:text-[30px] font-semibold text-white text-center"
-      >
-        {chatTitle}
-      </h2>
+      <div className="flex flex-col md:flex-row items-center w-full gap-y-4">
+        <h2
+          id="chatName"
+          className="text-xl md:text-[30px] font-semibold text-white text-center flex-1"
+        >
+          {chatTitle}
+        </h2>
+        {chatTitle !== DEFAULT_TITLE && (
+          <div className="ml-auto  flex items-center gap-2">
+            <Button className="px-10 py-2">Full Report</Button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("idle");
+                setAiResponse(null);
+                setChatTitle(DEFAULT_TITLE);
+                form.reset();
+              }}
+              className="p-1.5 bg-white rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
+              aria-label="Close chat"
+            >
+              <XIcon className="w-full max-w-4 h-4 md:max-w-5 md:h-5 text-black" />
+            </button>
+          </div>
+        )}
+      </div>
       {aiResponse && (
         <div id="response-area">
           <div className="card p-6">

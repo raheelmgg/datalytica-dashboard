@@ -14,7 +14,7 @@ function Layout({ children }: LayoutProps) {
   return (
     <div className="bg-primary-bg w-full min-h-screen pb-1">
       <LayoutHeader />
-      <section className="my-container py-6 md:pt-10 md:pb-6">
+      <section className="my-container py-2 md:pt-4 md:pb-2">
         <img
           src={clientLogo}
           alt="Brand Logo here."

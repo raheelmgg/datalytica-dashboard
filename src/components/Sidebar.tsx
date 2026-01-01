@@ -32,6 +32,7 @@ function NavList({
           item.children?.some((c) => c.href === activePath);
 
         const hasChildren = !!item.children?.length;
+        const hasHref = !!item.href;
         const isOpen = open[item.title] ?? false;
 
         const rowClasses = cn(
@@ -42,21 +43,49 @@ function NavList({
         return (
           <li key={item.title}>
             {hasChildren ? (
-              <button
-                type="button"
-                className={rowClasses}
-                onClick={() => toggle(item.title)}
-                aria-expanded={isOpen}
-              >
-                <span>{item.title}</span>
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 transition-transform",
-                    isOpen && "rotate-180"
-                  )}
-                />
-              </button>
+              // All items with children use the same layout: text + separate chevron
+              <div className={rowClasses}>
+                {hasHref ? (
+                  // Parent with href - text is clickable link
+                  <Link
+                    to={item.href ?? "#"}
+                    onClick={onNavigate}
+                    className="flex-1"
+                  >
+                    <span>{item.title}</span>
+                  </Link>
+                ) : (
+                  // Parent without href - text is button that toggles
+                  <button
+                    type="button"
+                    onClick={() => toggle(item.title)}
+                    className="flex-1 text-left"
+                    aria-expanded={isOpen}
+                  >
+                    <span>{item.title}</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggle(item.title);
+                  }}
+                  className="ml-2 p-1 hover:bg-white/10 rounded"
+                  aria-expanded={isOpen}
+                  aria-label={`Toggle ${item.title} submenu`}
+                >
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 transition-transform",
+                      isOpen && "rotate-180"
+                    )}
+                  />
+                </button>
+              </div>
             ) : (
+              // No children - simple link
               <Link
                 to={item.href ?? "#"}
                 className={rowClasses}

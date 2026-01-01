@@ -1,6 +1,7 @@
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -80,55 +81,59 @@ export default function AiInsights() {
 
     setMode("active");
 
-    setAiResponse(`Store performance is mixed this period.
-      
-      Traffic is up 2.8%, driven by stronger afternoon visits.
-     
-      Trip conversion is down 0.4%, meaning more shoppers left without purchasing.
-      
-      Units per transaction declined slightly, showing weaker impulse attachment.
-     
-      Sales dollars rose 1.3% due to higher average selling price.
-      
-      Gross profit declined 8% from cost pressure and heavier promotions.
-     
-      Inventory on hand increased 2.2%, signaling slower sell-through.
-      
-      Focus on improving attachment in weaker stores, tightening promotions, and reducing slow-moving items to lift margin next period.
-  `);
+    setAiResponse(`The performance forecast indicates the proposed plan is positioned to deliver consistent coverage across the selected markets and campaign period, with delivery pacing aligned to historical network performance and seasonal traffic patterns. Forecasted impressions are concentrated in high reliability locations, supporting stable reach accumulation and reduced volatility throughout the flight.
+
+Risk analysis highlights two primary considerations. First, a portion of inventory in high demand urban locations shows tighter availability during peak weekday periods, increasing the likelihood of delivery compression if campaign dates are shortened or budgets are increased late in the planning cycle. Second, frequency concentration begins to rise in smaller markets toward the end of the flight, suggesting diminishing incremental reach beyond the current allocation.
+
+Reach and frequency modelling indicates the plan achieves balanced exposure during the core campaign window, with strongest efficiency in the first two thirds of the flight. Extending spend evenly rather than front loading improves consistency and lowers the risk of early saturation. Network mix analysis confirms performance is driven by a complementary blend of high traffic and contextual locations rather than reliance on a single network.
+
+From a planning perspective, the forecast supports proceeding with the current structure while monitoring availability in constrained markets. Adjusting budgets between networks or extending flight dates would further reduce risk and improve delivery confidence before launch.`);
   };
 
   const onSubmit = (values: FormValues) => {
     setMode("active");
 
     // Simulated AI response (replace with real API later)
-    setAiResponse(`Store performance is mixed this period.
-      
-      Traffic is up 2.8%, driven by stronger afternoon visits.
-     
-      Trip conversion is down 0.4%, meaning more shoppers left without purchasing.
-      
-      Units per transaction declined slightly, showing weaker impulse attachment.
-     
-      Sales dollars rose 1.3% due to higher average selling price.
-      
-      Gross profit declined 8% from cost pressure and heavier promotions.
-     
-      Inventory on hand increased 2.2%, signaling slower sell-through.
-      
-      Focus on improving attachment in weaker stores, tightening promotions, and reducing slow-moving items to lift margin next period.`);
+    setAiResponse(`The performance forecast indicates the proposed plan is positioned to deliver consistent coverage across the selected markets and campaign period, with delivery pacing aligned to historical network performance and seasonal traffic patterns. Forecasted impressions are concentrated in high reliability locations, supporting stable reach accumulation and reduced volatility throughout the flight.
+
+Risk analysis highlights two primary considerations. First, a portion of inventory in high demand urban locations shows tighter availability during peak weekday periods, increasing the likelihood of delivery compression if campaign dates are shortened or budgets are increased late in the planning cycle. Second, frequency concentration begins to rise in smaller markets toward the end of the flight, suggesting diminishing incremental reach beyond the current allocation.
+
+Reach and frequency modelling indicates the plan achieves balanced exposure during the core campaign window, with strongest efficiency in the first two thirds of the flight. Extending spend evenly rather than front loading improves consistency and lowers the risk of early saturation. Network mix analysis confirms performance is driven by a complementary blend of high traffic and contextual locations rather than reliance on a single network.
+
+From a planning perspective, the forecast supports proceeding with the current structure while monitoring availability in constrained markets. Adjusting budgets between networks or extending flight dates would further reduce risk and improve delivery confidence before launch.`);
 
     console.log("Submitted prompt:", values.prompt);
   };
 
   return (
     <div className="flex flex-col gap-4 md:gap-9 max-w-full md:mx-auto px-1 md:px-4">
-      <h2
-        id="chatName"
-        className="text-xl md:text-[30px] font-semibold text-white text-center"
-      >
-        {chatTitle}
-      </h2>
+      <div className="flex flex-col md:flex-row items-center w-full">
+        <h2
+          id="chatName"
+          className="text-xl md:text-[30px] font-semibold text-white text-center flex-1"
+        >
+          {chatTitle}
+        </h2>
+        {chatTitle !== DEFAULT_TITLE && (
+          <div className="mr-auto md:ml-auto flex items-center gap-2">
+            {/* <Button className="px-10 py-2">Full Report</Button> */}
+            <button
+              type="button"
+              onClick={() => {
+                setMode("idle");
+                setAiResponse(null);
+                setChatTitle(DEFAULT_TITLE);
+                form.reset();
+              }}
+              className="p-1.5 bg-white rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
+              aria-label="Close chat"
+            >
+              <XIcon className="w-full max-w-4 h-4 md:max-w-5 md:h-5 text-black" />
+            </button>
+          </div>
+        )}
+      </div>
+
       {aiResponse && (
         <div id="response-area">
           <div className="card p-6">

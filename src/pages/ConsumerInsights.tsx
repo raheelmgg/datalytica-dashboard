@@ -67,7 +67,6 @@ const DATA_SOURCES = [
   "Transactional",
   "Loyalty",
   "CRM",
-  "Add mobile",
 ];
 const PROVINCES = ["AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK"];
 const DEMOGRAPHICS = [
@@ -131,7 +130,7 @@ const DEFAULT_FORM_VALUES: FormValues = {
   cultural: [],
   geography: [],
 };
-function CheckboxGroup({
+export function CheckboxGroup({
   name,
   options,
   control,
@@ -139,7 +138,7 @@ function CheckboxGroup({
 }: {
   name: keyof FormValues;
   options: string[];
-  control: any;
+  control?: any;
   isRow: boolean;
 }) {
   return (
@@ -222,7 +221,7 @@ export default function ConsumerInsights() {
   }, []);
 
   async function onSubmit(values: FormValues) {
-    if (values.searchLocation == "") {
+    if (values.searchLocation === "") {
       toast.error("Please Select a location");
       return;
     }
@@ -376,7 +375,7 @@ export default function ConsumerInsights() {
 
                   <section className="w-full md:max-w-43">
                     <h4 className="text-primary font-semibold mb-3">
-                      Lifestyle and attitudes
+                      Lifestyle
                     </h4>
                     <CheckboxGroup
                       name="lifestyle"
@@ -412,7 +411,7 @@ export default function ConsumerInsights() {
 
                   <section className="w-full md:max-w-43">
                     <h4 className="text-primary font-semibold mb-3">
-                      Cultural and newcomer
+                      Cultural
                     </h4>
                     <CheckboxGroup
                       name="cultural"
@@ -443,6 +442,11 @@ export default function ConsumerInsights() {
               </div>
             </form>
           </Form>
+        </div>
+      )}
+      {state === "loading" && (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-white text-lg">Loading...</div>
         </div>
       )}
       {state === "results" && results && (
@@ -497,7 +501,7 @@ function SearchResultView({
         </div>
         <div className="flex flex-col gap-4 md:flex-row md:gap-8 justify-between">
           <div className="card w-full max-w-full md:max-w-[30%] text-white">
-            <h3 className="text-lg font-semibold leading-6">Ai Inishgt</h3>
+            <h3 className="text-lg font-semibold leading-6">AI Insight</h3>
             <p className="text-[16px]">
               South Asian Enterprise embodies a richly diverse segment primarily
               residing in urban neighbourhoods within Toronto. Dominated by

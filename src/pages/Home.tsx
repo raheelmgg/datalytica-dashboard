@@ -119,7 +119,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="w-full flex flex-col md:flex-row gap-5 ">
-                  <div className="w-full max-w-[100%] md:max-w-[58%] flex flex-col gap-3">
+                  <div className="w-full max-w-full md:max-w-[58%] flex flex-col gap-3">
                     <div className="card">
                       <div className="flex flex-col md:flex-row justify-between gap-x-10">
                         <div className="w-full max-w-100">

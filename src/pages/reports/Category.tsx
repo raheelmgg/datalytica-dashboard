@@ -1,6 +1,8 @@
+import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -80,7 +82,6 @@ const PRE_BUILT_PROMPTS: PreBuiltPrompt[] = [
   },
 ];
 
-
 const formSchema = z.object({
   prompt: z.string().min(1, "Prompt is required"),
 });
@@ -117,33 +118,44 @@ From an executive perspective, the snapshot highlights where performance is scal
     setMode("active");
 
     // Simulated AI response (replace with real API later)
-    setAiResponse(`Store performance is mixed this period.
-      
-      Traffic is up 2.8%, driven by stronger afternoon visits.
-     
-      Trip conversion is down 0.4%, meaning more shoppers left without purchasing.
-      
-      Units per transaction declined slightly, showing weaker impulse attachment.
-     
-      Sales dollars rose 1.3% due to higher average selling price.
-      
-      Gross profit declined 8% from cost pressure and heavier promotions.
-     
-      Inventory on hand increased 2.2%, signaling slower sell-through.
-      
-      Focus on improving attachment in weaker stores, tightening promotions, and reducing slow-moving items to lift margin next period.`);
+    setAiResponse(`Sales performance this period is being driven by a concentrated set of stores, dayparts, and shopper segments that consistently outperform network averages. Overall sales are stable, with clear pockets of growth emerging during weekday afternoon and early evening hours, supported by repeat visitation and higher trip frequency. These trends indicate performance is being sustained by habitual shopping behaviour rather than one time spikes.
+
+Store level analysis shows stronger results in urban and commuter heavy locations, where visit density and conversion rates remain elevated. Underperforming stores display shorter dwell time and weaker basket attachment, suggesting opportunity for optimisation through placement, pricing, or promotional support. Category mix also plays a role, with higher velocity items contributing disproportionately to revenue.
+
+From an executive perspective, the snapshot highlights where performance is scaling efficiently and where intervention is required. Focusing attention on high performing store clusters and reinforcing proven daypart strategies can improve near term results while reducing overall execution risk.
+  `);
 
     console.log("Submitted prompt:", values.prompt);
   };
 
   return (
     <div className="flex flex-col gap-4 md:gap-9 max-w-full md:mx-auto px-1 md:px-4">
-      <h2
-        id="chatName"
-        className="text-xl md:text-[30px] font-semibold text-white text-center"
-      >
-        {chatTitle}
-      </h2>
+      <div className="flex flex-col md:flex-row items-center w-full gap-y-4">
+        <h2
+          id="chatName"
+          className="text-xl md:text-[30px] font-semibold text-white text-center flex-1"
+        >
+          {chatTitle}
+        </h2>
+        {chatTitle !== DEFAULT_TITLE && (
+          <div className="ml-auto  flex items-center gap-2">
+            <Button className="px-10 py-2">Full Report</Button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("idle");
+                setAiResponse(null);
+                setChatTitle(DEFAULT_TITLE);
+                form.reset();
+              }}
+              className="p-1.5 bg-white rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
+              aria-label="Close chat"
+            >
+              <XIcon className="w-full max-w-4 h-4 md:max-w-5 md:h-5 text-black" />
+            </button>
+          </div>
+        )}
+      </div>
       {aiResponse && (
         <div id="response-area">
           <div className="card p-6">

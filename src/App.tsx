@@ -31,6 +31,7 @@ import CategoryPerformanceBrand from "./pages/Brands/CategoryPerformanceBrand";
 import PromoPerformanceBrand from "./pages/Brands/PromoPerformanceBrand";
 import PriceMarginBrand from "./pages/Brands/PriceMarginBrand";
 import InventoryHealthBrand from "./pages/Brands/InventoryHealthBrand";
+import Index from "./pages/marketing/Index";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { index: true, element: <Navigate to="/home" replace /> },
       { path: "home", element: <Home /> },
       // Marketing DD
+      { path: "marketing", element: <Index /> },
       { path: "marketing/digital", element: <Digital /> },
       { path: "marketing/dooh", element: <Dooh /> },
       { path: "marketing/social", element: <Social /> },
@@ -68,7 +70,6 @@ const router = createBrowserRouter([
       { path: "brands/promo-performance", element: <PromoPerformanceBrand /> },
       { path: "brands/price-margin", element: <PriceMarginBrand /> },
       { path: "brands/inventory-health", element: <InventoryHealthBrand /> },
-      { path: "brands/basket-insights", element: <BasketInsightsBrand /> },
 
       { path: "consumer-insights", element: <ConsumerInsights /> },
       // Reports DD
