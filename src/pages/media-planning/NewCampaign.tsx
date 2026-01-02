@@ -40,6 +40,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { useNavigate } from "react-router-dom";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -318,6 +319,7 @@ const US_CITIES = [
 
 export default function NewCampaign() {
   const [isFilterDashboardOpen, setisFilterDashboardOpen] = useState(false);
+  const navigate = useNavigate();
   const [estimates, setEstimates] = useState({
     impressions: "0",
     cpm: "$0",
@@ -330,7 +332,9 @@ export default function NewCampaign() {
     mediaUnits: "0",
     budget: "$0",
   });
-  const animationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const animationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null
+  );
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -339,6 +343,8 @@ export default function NewCampaign() {
 
   const watchedFormats = form.watch("formats") || [];
   const watchedPlacements = form.watch("placementEnvironment") || [];
+  const watchedCampaignName = form.watch("campaignName") || "";
+  const watchedAddMobile = form.watch("addMobile") || false;
 
   const handleApplyFilters = (values: FormValues) => {
     console.log("form values ==> ", values);
@@ -348,7 +354,28 @@ export default function NewCampaign() {
   const handleSaveCampaign = () => {
     const formValues = form.getValues();
     console.log("Full form data:", formValues);
-    toast.success("Campaign saved successfully!");
+
+    const toastId = toast.loading("Saving campaign…");
+
+    setTimeout(() => {
+      toast.info("Campaign saved successfully", {
+        id: toastId,
+      });
+    }, 800);
+  };
+  const handleCreateCampaign = () => {
+    const formValues = form.getValues();
+    console.log("Full form data:", formValues);
+
+    const toastId = toast.loading("Creating campaign…");
+
+    setTimeout(() => {
+      toast.success("Campaign created successfully", {
+        id: toastId,
+      });
+
+      navigate("/media-planning/campaigns");
+    }, 1000);
   };
 
   // Update estimates when formats change with toast and animation
@@ -361,20 +388,82 @@ export default function NewCampaign() {
       animationIntervalRef.current = null;
     }
 
-    if (watchedFormats.length > 0) {
+    // Format values mapping - each format adds to the total (real client numbers)
+    // Only specified formats have values, others default to 0
+    // Using formatCheckboxes array indices to ensure exact string matching
+    const formatValues: Record<string, { impressions: number; cpm: number; mediaUnits: number; budget: number }> = {
+      [formatCheckboxes[0]]: { impressions: 4000000, cpm: 13, mediaUnits: 40, budget: 100000 }, // DOOH, vertical
+      [formatCheckboxes[1]]: { impressions: 8000000, cpm: 13, mediaUnits: 80, budget: 100000 }, // DOOH, horizontal
+      [formatCheckboxes[2]]: { impressions: 0, cpm: 0, mediaUnits: 0, budget: 0 }, // OOH, 2' x 3'
+      [formatCheckboxes[3]]: { impressions: 9000000, cpm: 12, mediaUnits: 120, budget: 100000 }, // OOH, 4' x 6'
+      [formatCheckboxes[4]]: { impressions: 0, cpm: 0, mediaUnits: 0, budget: 0 }, // OOH, 5' x 10'
+    };
+
+    // Add mobile values
+    const addMobileValues = { impressions: 12000000, cpm: 12, mediaUnits: 120, budget: 100000 };
+
+    if (watchedFormats.length > 0 || watchedAddMobile) {
       toast.loading("Calculating estimates...", { id: "estimates" });
-      
+
       // Simulate calculation delay
       timeoutId = setTimeout(() => {
-        const newEstimates = {
-          impressions: "9M",
-          cpm: "$15",
-          mediaUnits: "120",
-          budget: "$100K",
+        // Calculate cumulative totals from all selected formats
+        const totals = watchedFormats.reduce(
+          (acc, format) => {
+            const values = formatValues[format] || { impressions: 0, cpm: 0, mediaUnits: 0, budget: 0 };
+            // Add all values (including 0s for formats without values)
+            acc.impressions += values.impressions;
+            acc.mediaUnits += values.mediaUnits;
+            acc.budget += values.budget;
+            // CPM: add up like other values
+            acc.cpm += values.cpm;
+            return acc;
+          },
+          { impressions: 0, mediaUnits: 0, budget: 0, cpm: 0 }
+        );
+
+        // Add mobile if checked
+        if (watchedAddMobile) {
+          totals.impressions += addMobileValues.impressions;
+          totals.mediaUnits += addMobileValues.mediaUnits;
+          totals.budget += addMobileValues.budget;
+          totals.cpm += addMobileValues.cpm;
+        }
+
+        const formatNumber = (num: number, type: "impressions" | "cpm" | "mediaUnits" | "budget"): string => {
+          if (type === "impressions") {
+            if (num >= 1000000) {
+              const value = num / 1000000;
+              return value >= 1 ? `${value.toFixed(1)}M`.replace(".0", "") : `${Math.round(num).toLocaleString()}`;
+            }
+            return Math.round(num).toLocaleString();
+          }
+          if (type === "cpm") {
+            // Round CPM to nearest integer
+            return `$${Math.round(num)}`;
+          }
+          if (type === "budget") {
+            if (num >= 1000) {
+              const value = num / 1000;
+              return `$${value >= 1 ? Math.round(value) : Math.round(num)}K`;
+            }
+            return `$${Math.round(num)}`;
+          }
+          return Math.round(num).toString();
         };
+
+        const newEstimates = {
+          impressions: formatNumber(totals.impressions, "impressions"),
+          cpm: formatNumber(totals.cpm, "cpm"),
+          mediaUnits: formatNumber(totals.mediaUnits, "mediaUnits"),
+          budget: formatNumber(totals.budget, "budget"),
+        };
+
         setEstimates(newEstimates);
         animationIntervalRef.current = animateNumbers(newEstimates);
-        toast.success("Estimates calculated successfully!", { id: "estimates" });
+        toast.info("Estimates calculated successfully!", {
+          id: "estimates",
+        });
       }, 800);
     } else {
       const resetEstimates = {
@@ -394,15 +483,18 @@ export default function NewCampaign() {
         animationIntervalRef.current = null;
       }
     };
-  }, [watchedFormats]);
+  }, [watchedFormats, watchedAddMobile]);
 
   // Animate numbers from old to new value
-  const animateNumbers = (targetValues: typeof estimates): ReturnType<typeof setInterval> => {
+  const animateNumbers = (
+    targetValues: typeof estimates
+  ): ReturnType<typeof setInterval> => {
     const duration = 1000; // 1 second animation
     const steps = 30;
     const stepDuration = duration / steps;
-    
+
     const parseValue = (value: string): number => {
+      if (!value || value === "0" || value === "$0") return 0;
       const cleaned = value.replace("$", "").trim();
       if (cleaned === "0" || cleaned === "") return 0;
       if (value.includes("M")) {
@@ -411,20 +503,30 @@ export default function NewCampaign() {
       if (value.includes("K")) {
         return parseFloat(cleaned.replace("K", "")) * 1000;
       }
-      return parseFloat(cleaned) || 0;
+      const parsed = parseFloat(cleaned);
+      return isNaN(parsed) ? 0 : parsed;
     };
 
-    const formatValue = (num: number, original: string): string => {
+    const formatValue = (num: number, original: string, isAnimating: boolean = true): string => {
       if (num <= 0) return original.includes("$") ? "$0" : "0";
       if (original.includes("M")) {
         const value = num / 1000000;
-        return value >= 1 ? `${value.toFixed(1)}M`.replace(".0", "") : `${Math.round(num).toLocaleString()}`;
+        return value >= 1
+          ? `${value.toFixed(1)}M`.replace(".0", "")
+          : `${Math.round(num).toLocaleString()}`;
       }
       if (original.includes("K")) {
         const value = num / 1000;
         return value >= 1 ? `$${Math.round(value)}K` : `$${Math.round(num)}`;
       }
-      if (original.startsWith("$")) {
+      if (original.startsWith("$") && !original.includes("K")) {
+        // For CPM, show one decimal during animation for smoother transitions
+        // This ensures CPM always shows animation even if final value is same
+        if (isAnimating) {
+          // Show decimal during animation to ensure visual update
+          const rounded = Math.round(num * 10) / 10;
+          return `$${rounded.toFixed(1)}`;
+        }
         return `$${Math.round(num)}`;
       }
       return Math.round(num).toString();
@@ -444,6 +546,7 @@ export default function NewCampaign() {
       budget: parseValue(targetValues.budget),
     };
 
+    // Calculate increments
     const increments = {
       impressions: (targetNums.impressions - startValues.impressions) / steps,
       cpm: (targetNums.cpm - startValues.cpm) / steps,
@@ -454,22 +557,34 @@ export default function NewCampaign() {
     let currentStep = 0;
     const interval = setInterval(() => {
       currentStep++;
-      
+
       const currentValues = {
-        impressions: startValues.impressions + increments.impressions * currentStep,
+        impressions:
+          startValues.impressions + increments.impressions * currentStep,
         cpm: startValues.cpm + increments.cpm * currentStep,
-        mediaUnits: startValues.mediaUnits + increments.mediaUnits * currentStep,
+        mediaUnits:
+          startValues.mediaUnits + increments.mediaUnits * currentStep,
         budget: startValues.budget + increments.budget * currentStep,
       };
 
+      const isLastStep = currentStep >= steps;
+      
       setDisplayEstimates({
-        impressions: formatValue(currentValues.impressions, targetValues.impressions),
-        cpm: formatValue(currentValues.cpm, targetValues.cpm),
-        mediaUnits: formatValue(currentValues.mediaUnits, targetValues.mediaUnits),
-        budget: formatValue(currentValues.budget, targetValues.budget),
+        impressions: formatValue(
+          currentValues.impressions,
+          targetValues.impressions,
+          !isLastStep
+        ),
+        cpm: formatValue(currentValues.cpm, targetValues.cpm, !isLastStep),
+        mediaUnits: formatValue(
+          currentValues.mediaUnits,
+          targetValues.mediaUnits,
+          !isLastStep
+        ),
+        budget: formatValue(currentValues.budget, targetValues.budget, !isLastStep),
       });
 
-      if (currentStep >= steps) {
+      if (isLastStep) {
         clearInterval(interval);
         setDisplayEstimates(targetValues);
       }
@@ -480,16 +595,16 @@ export default function NewCampaign() {
   return (
     <div className="flex flex-col gap-y-6">
       <Form {...form}>
-        <PageHeader title="Campaign name" />
-        <div className="main flex flex-col md:flex-row justify-between w-full gap-x-10 gap-y-5">
-          <div className="grow flex flex-col gap-y-5 w-full max-w-full md:max-w-[36%]">
-            <div className="card text-white">
+        <PageHeader title={watchedCampaignName || "Campaign name"} />
+        <div className="main flex flex-col md:flex-row justify-between w-full gap-x-4 gap-y-2">
+          <div className="grow flex flex-col gap-y-2 w-full max-w-full md:max-w-[36%]">
+            <div className="card text-white gap-y-3! p-3.5!">
               <FormField
                 control={form.control}
                 name="campaignName"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex flex-col gap-y-3">
+                    <div className="flex flex-col gap-y-2">
                       <FormLabel className="text-[14px] font-semibold text-white">
                         Campaign
                       </FormLabel>
@@ -505,11 +620,11 @@ export default function NewCampaign() {
                   </FormItem>
                 )}
               />
-              <div className="flex flex-col gap-y-3">
+              <div className="flex flex-col gap-y-2">
                 <FormLabel className="text-[14px] font-semibold text-white">
                   Campaign objective
                 </FormLabel>
-                <div className="grid grid-cols-2 gap-x-10 gap-y-3">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                   <CheckboxGroup
                     name="campaignObjective"
                     control={form.control}
@@ -518,13 +633,13 @@ export default function NewCampaign() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
                 <FormField
                   control={form.control}
                   name="startDate"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="flex flex-col justify-start gap-y-3">
+                      <div className="flex flex-col justify-start gap-y-2">
                         <FormLabel className="text-[14px] font-semibold text-white">
                           Start Date
                         </FormLabel>
@@ -543,7 +658,7 @@ export default function NewCampaign() {
                   name="endDate"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="flex flex-col justify-start gap-y-3">
+                      <div className="flex flex-col justify-start gap-y-2">
                         <FormLabel className="text-[14px] font-semibold text-white">
                           End Date
                         </FormLabel>
@@ -559,14 +674,14 @@ export default function NewCampaign() {
                 />
               </div>
             </div>
-            <div className="card text-white">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+            <div className="card text-white gap-y-3! p-4.5! gap-y-2! p-3.5!">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
                 <FormField
                   control={form.control}
                   name="budget"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="flex flex-col gap-y-3">
+                      <div className="flex flex-col gap-y-2">
                         <FormLabel className="text-[14px] font-semibold text-white">
                           Budget
                         </FormLabel>
@@ -592,7 +707,7 @@ export default function NewCampaign() {
                   name="country"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="flex flex-col gap-y-3">
+                      <div className="flex flex-col gap-y-2">
                         <FormLabel className="text-[14px] font-semibold text-white">
                           Country
                         </FormLabel>
@@ -645,7 +760,7 @@ export default function NewCampaign() {
                   name="provinces"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="flex flex-col gap-y-3">
+                      <div className="flex flex-col gap-y-2">
                         <FormLabel className="text-[14px] font-semibold text-white">
                           Province or State
                         </FormLabel>
@@ -666,7 +781,7 @@ export default function NewCampaign() {
                   name="cities"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="flex flex-col gap-y-3">
+                      <div className="flex flex-col gap-y-2">
                         <FormLabel className="text-[14px] font-semibold text-white">
                           City
                         </FormLabel>
@@ -684,13 +799,13 @@ export default function NewCampaign() {
                 />
               </div>
             </div>
-            <div className="card text-white">
-              <div className="flex flex-col md:flex-row gap-x-10 gap-y-4 items-end justify-between w-full">
+            <div className="card text-white gap-y-3! p-4.5!">
+              <div className="flex flex-col md:flex-row gap-x-4 gap-y-2 items-end justify-between w-full">
                 <FormField
                   control={form.control}
                   name="zipPostalCode"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col justify-start gap-y-3 w-full">
+                    <FormItem className="flex flex-col justify-start gap-y-2 w-full">
                       <FormLabel className="text-[14px] font-semibold text-white">
                         ZIP / Postal code
                       </FormLabel>
@@ -712,12 +827,12 @@ export default function NewCampaign() {
                 </div>
               </div>
             </div>
-            <div className="card text-white">
-              <div className="flex flex-col gap-y-3">
+            <div className="card text-white gap-y-3! p-4.5!">
+              <div className="flex flex-col gap-y-2">
                 <FormLabel className="text-[14px] font-semibold text-white">
                   Placement environment
                 </FormLabel>
-                <div className="grid grid-cols-2 gap-x-10 gap-y-3">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                   <CheckboxGroup
                     name="placementEnvironment"
                     control={form.control}
@@ -728,19 +843,29 @@ export default function NewCampaign() {
               </div>
             </div>
           </div>
-          <div className="grow flex flex-col gap-y-5 w-full md:max-w-[53%] ">
-            {watchedPlacements.length > 0 && (
-              <div className="card text-white">
-                <div className="flex flex-col gap-y-3 h-auto max-h-60 overflow-y-scroll scrollbar">
-                  <h3 className="text-white text-[14px] leading-6 font-semibold">
-                    Network Type
-                  </h3>
+          <div className="grow flex flex-col gap-y-2 w-full md:max-w-[53%] ">
+            <div className="card text-white gap-y-3! p-4.5!">
+              <div className="flex flex-col gap-y-2 h-auto max-h-60 overflow-y-scroll scrollbar">
+                <h3 className="text-white text-[14px] leading-5 font-semibold mb-1">
+                  Network Type
+                </h3>
+                {watchedPlacements.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-1 text-center">
+                    <p className="text-white/60 text-sm mb-2">
+                      No placement environments selected
+                    </p>
+                    <p className="text-white/40 text-xs">
+                      Select placement environments to see network options
+                    </p>
+                  </div>
+                ) : (
+                  <>
                   {watchedPlacements.includes("Airports") && (
-                    <div className="flex flex-col gap-y-3">
+                    <div className="flex flex-col gap-y-2">
                       <FormLabel className="text-[14px] font-semibold text-primary">
                         Airport
                       </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                         <CheckboxGroup
                           name="airportNetworks"
                           control={form.control}
@@ -751,11 +876,11 @@ export default function NewCampaign() {
                     </div>
                   )}
                   {watchedPlacements.includes("Convenience store") && (
-                    <div className="flex flex-col gap-y-3">
+                    <div className="flex flex-col gap-y-2">
                       <FormLabel className="text-[14px] font-semibold text-primary">
                         Convenience store
                       </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                         <CheckboxGroup
                           name="convenienceStoreNetworks"
                           control={form.control}
@@ -766,11 +891,11 @@ export default function NewCampaign() {
                     </div>
                   )}
                   {watchedPlacements.includes("Grocery") && (
-                    <div className="flex flex-col gap-y-3">
+                    <div className="flex flex-col gap-y-2">
                       <FormLabel className="text-[14px] font-semibold text-primary">
                         Grocery
                       </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                         <CheckboxGroup
                           name="groceryNetworks"
                           control={form.control}
@@ -781,11 +906,11 @@ export default function NewCampaign() {
                     </div>
                   )}
                   {watchedPlacements.includes("Government office") && (
-                    <div className="flex flex-col gap-y-3">
+                    <div className="flex flex-col gap-y-2">
                       <FormLabel className="text-[14px] font-semibold text-primary">
                         Government office
                       </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                         <CheckboxGroup
                           name="governmentOfficeNetworks"
                           control={form.control}
@@ -796,11 +921,11 @@ export default function NewCampaign() {
                     </div>
                   )}
                   {watchedPlacements.includes("Transit") && (
-                    <div className="flex flex-col gap-y-3">
+                    <div className="flex flex-col gap-y-2">
                       <FormLabel className="text-[14px] font-semibold text-primary">
                         Transit
                       </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                         <CheckboxGroup
                           name="transitNetworks"
                           control={form.control}
@@ -811,11 +936,11 @@ export default function NewCampaign() {
                     </div>
                   )}
                   {watchedPlacements.includes("Gas station") && (
-                    <div className="flex flex-col gap-y-3">
+                    <div className="flex flex-col gap-y-2">
                       <FormLabel className="text-[14px] font-semibold text-primary">
                         Gas station
                       </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                         <CheckboxGroup
                           name="gasStationNetworks"
                           control={form.control}
@@ -826,11 +951,11 @@ export default function NewCampaign() {
                     </div>
                   )}
                   {watchedPlacements.includes("Roadside") && (
-                    <div className="flex flex-col gap-y-3">
+                    <div className="flex flex-col gap-y-2">
                       <FormLabel className="text-[14px] font-semibold text-primary">
                         Roadside
                       </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                         <CheckboxGroup
                           name="roadsideNetworks"
                           control={form.control}
@@ -841,11 +966,11 @@ export default function NewCampaign() {
                     </div>
                   )}
                   {watchedPlacements.includes("Large format") && (
-                    <div className="flex flex-col gap-y-3">
+                    <div className="flex flex-col gap-y-2">
                       <FormLabel className="text-[14px] font-semibold text-primary">
                         Large format
                       </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                         <CheckboxGroup
                           name="largeFormatNetworks"
                           control={form.control}
@@ -855,16 +980,17 @@ export default function NewCampaign() {
                       </div>
                     </div>
                   )}
-                </div>
+                  </>
+                )}
               </div>
-            )}
-            <div className="card">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-x-4 md:gap-x-10 gap-y-4">
-                <div className="flex flex-col gap-y-3 grow">
-                  <h3 className="text-white text-[14px] leading-6 font-semibold">
+            </div>
+            <div className="card text-white gap-y-3! p-4.5!">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-x-4 gap-y-2">
+                <div className="flex flex-col gap-y-2 grow">
+                  <h3 className="text-white text-[14px] leading-5 font-semibold">
                     Format
                   </h3>
-                  <div className="grid grid-cols-2 gap-x-10 gap-y-4">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                     <CheckboxGroup
                       name="formats"
                       control={form.control}
@@ -879,7 +1005,7 @@ export default function NewCampaign() {
                     name="addMobile"
                     render={({ field }) => (
                       <FormItem>
-                        <div className="flex gap-x-2 border border-primary w-fit rounded-full px-5 py-1.5">
+                        <div className="flex gap-x-2 border border-primary w-fit rounded-full px-4 py-1">
                           <FormControl>
                             <Checkbox
                               checked={field.value}
@@ -897,13 +1023,13 @@ export default function NewCampaign() {
                 </div>
               </div>
             </div>
-            <div className="card">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-x-4 md:gap-x-10 gap-y-4">
-                <div className="flex flex-col gap-y-3 grow">
-                  <h3 className="text-white text-[14px] leading-6 font-semibold">
+            <div className="card text-white gap-y-3! p-4.5!">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-x-4 gap-y-2">
+                <div className="flex flex-col gap-y-2 grow">
+                  <h3 className="text-white text-[14px] leading-5 font-semibold">
                     Data sources
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
                     <CheckboxGroup
                       name="dataSources"
                       control={form.control}
@@ -924,9 +1050,9 @@ export default function NewCampaign() {
                     onClose={() => setisFilterDashboardOpen(false)}
                     title={`Data sources - Filters`}
                   >
-                    <div className="flex flex-col gap-4">
-                      <div className="w-full flex flex-col gap-8">
-                        <div className="card">
+                    <div className="flex flex-col gap-2">
+                      <div className="w-full flex flex-col gap-3">
+                        <div className="card text-white gap-y-3! p-4.5!">
                           {/* Form of checkboxes */}
                           <div>
                             <div>
@@ -938,12 +1064,12 @@ export default function NewCampaign() {
                               <form
                                 onSubmit={form.handleSubmit(handleApplyFilters)}
                               >
-                                <div className="w-full flex flex-row justify-between gap-4 flex-wrap md:gap-4">
+                                <div className="w-full flex flex-row justify-between gap-2 flex-wrap md:gap-2">
                                   <section className="min-w-40">
-                                    <h4 className="text-primary font-semibold mb-3">
+                                    <h4 className="text-primary font-semibold mb-2">
                                       Demographics
                                     </h4>
-                                    <div className="flex flex-col gap-x-10 gap-y-3">
+                                    <div className="flex flex-col gap-x-4 gap-y-2">
                                       <CheckboxGroup
                                         name="demographics"
                                         control={form.control}
@@ -954,10 +1080,10 @@ export default function NewCampaign() {
                                   </section>
 
                                   <section className="min-w-40">
-                                    <h4 className="text-primary font-semibold mb-3">
+                                    <h4 className="text-primary font-semibold mb-2">
                                       Media habits
                                     </h4>
-                                    <div className="flex flex-col gap-x-10 gap-y-3">
+                                    <div className="flex flex-col gap-x-4 gap-y-2">
                                       <CheckboxGroup
                                         name="mediaHabits"
                                         control={form.control}
@@ -968,10 +1094,10 @@ export default function NewCampaign() {
                                   </section>
 
                                   <section className="min-w-40">
-                                    <h4 className="text-primary font-semibold mb-3">
+                                    <h4 className="text-primary font-semibold mb-2">
                                       Lifestyle
                                     </h4>
-                                    <div className="flex flex-col gap-x-10 gap-y-3">
+                                    <div className="flex flex-col gap-x-4 gap-y-2">
                                       <CheckboxGroup
                                         name="lifestyle"
                                         control={form.control}
@@ -982,10 +1108,10 @@ export default function NewCampaign() {
                                   </section>
 
                                   <section className="min-w-40">
-                                    <h4 className="text-primary font-semibold mb-3">
+                                    <h4 className="text-primary font-semibold mb-2">
                                       Product usage
                                     </h4>
-                                    <div className="flex flex-col gap-x-10 gap-y-3">
+                                    <div className="flex flex-col gap-x-4 gap-y-2">
                                       <CheckboxGroup
                                         name="productUsage"
                                         control={form.control}
@@ -996,10 +1122,10 @@ export default function NewCampaign() {
                                   </section>
 
                                   <section className="min-w-40">
-                                    <h4 className="text-primary font-semibold mb-3">
+                                    <h4 className="text-primary font-semibold mb-2">
                                       Digital behaviour
                                     </h4>
-                                    <div className="flex flex-col gap-x-10 gap-y-3">
+                                    <div className="flex flex-col gap-x-4 gap-y-2">
                                       <CheckboxGroup
                                         name="digitalBehaviour"
                                         control={form.control}
@@ -1010,10 +1136,10 @@ export default function NewCampaign() {
                                   </section>
 
                                   <section className="min-w-40">
-                                    <h4 className="text-primary font-semibold mb-3">
+                                    <h4 className="text-primary font-semibold mb-2">
                                       Cultural
                                     </h4>
-                                    <div className="flex flex-col gap-x-10 gap-y-3">
+                                    <div className="flex flex-col gap-x-4 gap-y-2">
                                       <CheckboxGroup
                                         name="cultural"
                                         control={form.control}
@@ -1024,10 +1150,10 @@ export default function NewCampaign() {
                                   </section>
 
                                   <section className="min-w-40">
-                                    <h4 className="text-primary font-semibold mb-3">
+                                    <h4 className="text-primary font-semibold mb-2">
                                       Geography
                                     </h4>
-                                    <div className="flex flex-col gap-x-10 gap-y-3">
+                                    <div className="flex flex-col gap-x-4 gap-y-2">
                                       <CheckboxGroup
                                         name="geography"
                                         control={form.control}
@@ -1053,12 +1179,12 @@ export default function NewCampaign() {
                 </div>
               </div>
             </div>
-            <div className="card text-white">
-              <h3 className="text-white text-[14px] leading-6 font-semibold">
+            <div className="card text-white gap-y-3! p-4.5!">
+              <h3 className="text-white text-[14px] leading-5 font-semibold mb-2">
                 AI insights & Recommendations
               </h3>
-              <div className="h-auto max-h-42.5 overflow-y-scroll scrollbar">
-                <div className="flex flex-col gap-3">
+              <div className="h-auto max-h-40 overflow-y-scroll scrollbar">
+                <div className="flex flex-col gap-2">
                   <AiInlineRecommendation
                     Icon={LightbulbIcon}
                     text="Add mobile using the same creative to increase estimated impressions and reach with minimal effort."
@@ -1104,22 +1230,28 @@ export default function NewCampaign() {
             </div>
           </div>
           <div className="w-full max-w-full md:max-w-[11%] grow ">
-            <div className="flex flex-col justify-between gap-6 h-full">
-               <div className="grid grid-cols-2 md:grid-cols-1 gap-6">
-                 <EstimateButtons
-                   title="Estimated impressions"
-                   number={displayEstimates.impressions}
-                 />
-                 <EstimateButtons title="Estimated CPM" number={displayEstimates.cpm} />
-                 <EstimateButtons
-                   title="Media units"
-                   number={displayEstimates.mediaUnits}
-                 />
-                 <EstimateButtons title="Budget" number={displayEstimates.budget} />
-               </div>
+            <div className="flex flex-col justify-between gap-3 h-full">
+              <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
+                <EstimateButtons
+                  title="Estimated impressions"
+                  number={displayEstimates.impressions}
+                />
+                <EstimateButtons
+                  title="Estimated CPM"
+                  number={displayEstimates.cpm}
+                />
+                <EstimateButtons
+                  title="Media units"
+                  number={displayEstimates.mediaUnits}
+                />
+                <EstimateButtons
+                  title="Budget"
+                  number={displayEstimates.budget}
+                />
+              </div>
               <div>
-                <div className="flex flex-col gap-y-4">
-                  <div className="bg-secondary p-2 rounded-3xl text-white flex flex-row justify-center items-center gap-3 md:h-24">
+                <div className="flex flex-col gap-y-2">
+                  <div className="bg-secondary p-2 rounded-3xl text-white flex flex-row justify-center items-center gap-2 md:h-20">
                     <span className="text-[16px] font-bold leading-tight">
                       Map
                     </span>
@@ -1134,11 +1266,15 @@ export default function NewCampaign() {
                       save campaign
                     </Button>
                   </div>
-                  <div className="bg-primary kpi-shadow-primaryw-full flex flex-col gap-2.5 md:gap-3 items-center justify-center rounded-3xl p-5 text-white transition-shadow duration-300 cursor-pointer relative md:h-30 ">
+                  <button
+                    className="bg-primary kpi-shadow-primaryw-full flex flex-col gap-1.5 md:gap-2 items-center justify-center rounded-3xl p-3 text-white transition-shadow duration-300 cursor-pointer relative md:h-24"
+                    type="submit"
+                    onClick={handleCreateCampaign}
+                  >
                     <span className="text-[16px] font-bold leading-4 text-center">
                       create campaign
                     </span>
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1271,7 +1407,7 @@ function MultiSelectDropdown({
 
 function EstimateButtons({ title, number }: { title: string; number: string }) {
   return (
-    <div className="bg-primary kpi-shadow-primaryw-full h-full flex flex-col gap-2.5 md:gap-3 items-center justify-center rounded-3xl px-1 py-5 text-white transition-shadow duration-300 cursor-pointer relative">
+    <div className="bg-primary kpi-shadow-primaryw-full h-full flex flex-col gap-2 md:gap-2 items-center justify-center rounded-3xl px-2 py-5 text-white transition-shadow duration-300 cursor-pointer relative">
       <span className="text-[14px] font-bold leading-4 text-center">
         {title}
       </span>
@@ -1305,9 +1441,9 @@ function CheckboxGroup({
 
             return (
               <FormItem
-                className={`flex items-center gap-2 ${
+                className={`flex items-center gap-1.5 ${
                   isAddMobile
-                    ? "border border-primary rounded-full px-5 py-1.5"
+                    ? "border border-primary rounded-full px-4 py-1"
                     : ""
                 }`}
               >

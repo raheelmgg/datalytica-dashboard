@@ -50,7 +50,7 @@ function NavList({
                   <Link
                     to={item.href ?? "#"}
                     onClick={onNavigate}
-                    className="flex-1"
+                    className="flex-1 cursor-pointer"
                   >
                     <span>{item.title}</span>
                   </Link>
@@ -88,7 +88,7 @@ function NavList({
               // No children - simple link
               <Link
                 to={item.href ?? "#"}
-                className={rowClasses}
+                className={cn(rowClasses, "cursor-pointer")}
                 onClick={onNavigate}
               >
                 <span>{item.title}</span>
@@ -110,7 +110,7 @@ function NavList({
                         to={child.href ?? "#"}
                         onClick={onNavigate}
                         className={cn(
-                          "block py-1 text-sm hover:text-primary",
+                          "block py-1 text-sm hover:text-primary cursor-pointer",
                           childActive &&
                             "text-primary underline underline-offset-4"
                         )}
@@ -145,9 +145,17 @@ export default function Sidebar({ activePath }: SidebarProps) {
   };
 
   useEffect(() => {
-    const parent = navItems.find((item) =>
+    // Check if activePath matches a child route
+    const parentByChild = navItems.find((item) =>
       item.children?.some((child) => child.href === activePath)
     );
+
+    // Check if activePath matches a parent route (Marketing is special - has clickable parent)
+    const parentByHref = navItems.find(
+      (item) => item.href === activePath && item.children?.length
+    );
+
+    const parent = parentByChild || parentByHref;
 
     if (parent) {
       setOpen({ [parent.title]: true });

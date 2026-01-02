@@ -65,7 +65,7 @@ export default function Campaigns() {
             ))}
           </div>
         </div>
-        <div className="card w-full max-w-full">
+        <div className="card p-3! w-full max-w-full">
           <CampaignTable />
         </div>
       </div>

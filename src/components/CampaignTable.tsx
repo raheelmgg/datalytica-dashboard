@@ -24,16 +24,27 @@ type Campaign = {
 };
 
 const campaigns: Campaign[] = [
+  // {
+  //   name: "Toronto Winter Commuter Reach",
+  //   status: "Active",
+  //   startDate: "1 dec, 25",
+  //   endDate: "15 jan, 26",
+  //   mediaUnits: 1240,
+  //   budgetPlanned: 250000,
+  //   budgetSpent: 148500,
+  //   impressionsEstimated: 12.5,
+  //   impressionsDelivered: 7.4,
+  // },
   {
-    name: "Toronto Winter Commuter Reach",
-    status: "Active",
-    startDate: "1 dec, 25",
-    endDate: "15 jan, 26",
-    mediaUnits: 1240,
-    budgetPlanned: 250000,
-    budgetSpent: 148500,
-    impressionsEstimated: 12.5,
-    impressionsDelivered: 7.4,
+    name: "CES Test",
+    status: "Saved",
+    startDate: "Jan 1, 2026",
+    endDate: "Feb 1, 2026",
+    mediaUnits: 120,
+    budgetPlanned: 100000,
+    budgetSpent: 0,
+    impressionsEstimated: 12,
+    impressionsDelivered: 0,
   },
   {
     name: "Montréal Urban Retail Momentum + Mobile",

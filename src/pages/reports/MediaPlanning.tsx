@@ -82,7 +82,6 @@ const PRE_BUILT_PROMPTS: PreBuiltPrompt[] = [
   },
 ];
 
-
 const formSchema = z.object({
   prompt: z.string().min(1, "Prompt is required"),
 });
@@ -143,7 +142,12 @@ From a planning perspective, premium locations provide more predictable delivery
         </h2>
         {chatTitle !== DEFAULT_TITLE && (
           <div className="ml-auto  flex items-center gap-2">
-            <Button className="px-10 py-2">Full Report</Button>
+            <Button
+              className="px-10 py-2"
+              onClick={() => window.open("/full-report", "_blank")}
+            >
+              Full Report
+            </Button>
             <button
               type="button"
               onClick={() => {

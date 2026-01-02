@@ -143,7 +143,12 @@ From an executive perspective, this view confirms that performance is being driv
         </h2>
         {chatTitle !== DEFAULT_TITLE && (
           <div className="ml-auto  flex items-center gap-2">
-            <Button className="px-10 py-2">Full Report</Button>
+            <Button
+              className="px-10 py-2"
+              onClick={() => window.open("/full-report", "_blank")}
+            >
+              Full Report
+            </Button>
             <button
               type="button"
               onClick={() => {
