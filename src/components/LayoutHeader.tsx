@@ -12,13 +12,14 @@ function LayoutHeader() {
         <div className="flex flex-row items-center justify-center md:gap-5 gap-2">
           <div className="flex flex-row items-center text-white md:gap-5 gap-2">
             <div className="flex flex-col">
-              <span className=" md:text-[16px] text-[14px]">Joan Smith</span>
+              <span className=" md:text-[16px] text-[14px]">Sam Smith</span>
               <span className="md:block md:text-[14px] hidden text-right">
                 Admin
               </span>
             </div>
-
-            <SettingsDD />
+            <div className="cursor-pointer">
+              <SettingsDD />
+            </div>
           </div>
           <div>
             <Button className="bg-primary text-white w-full md:px-8 md:py-2.5 px-4 py-1.5 rounded-2xl font-semibold text-[16px] leading-none">

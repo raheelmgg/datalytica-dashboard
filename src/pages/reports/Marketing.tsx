@@ -9,12 +9,13 @@ import * as z from "zod";
 
 type PreBuiltPrompt = {
   id: string;
-  title: string;
+  title: string; 
   description: string;
   category: string;
 };
 
-const DEFAULT_TITLE = "Welcome Joan, these are today’s reports";
+const DEFAULT_TITLE =
+  "Good to see you, Sam. Here is your marketing report for today";
 
 const PRE_BUILT_PROMPTS: PreBuiltPrompt[] = [
   {
@@ -187,11 +188,17 @@ From an executive perspective, this view confirms that performance is being driv
                       {...field}
                       placeholder="Message"
                       className="
-                        card text-[20px]! placeholder:text-[#6E6E7A]
+                        card text-[16px] md:text-[20px]! placeholder:text-[#6E6E7A]
                         text-white resize-none py-6! max-h-40
                         outline-none  focus-visible:ring-0 scrollbar"
                     />
                   </FormControl>
+                  <Button
+                    type="submit"
+                    className="w-16.5 absolute right-6 top-5 border border-[#6E6E7A] text-[#6E6E7A] bg-transparent! p-1 text-[16px]"
+                  >
+                    Send
+                  </Button>
                 </FormItem>
               )}
             />

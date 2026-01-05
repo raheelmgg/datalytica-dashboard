@@ -14,7 +14,7 @@ type PreBuiltPrompt = {
   category: string;
 };
 
-const DEFAULT_TITLE = "Welcome Joan, these are today’s reports";
+const DEFAULT_TITLE = "Sam, this is your category overview for today";
 
 const PRE_BUILT_PROMPTS: PreBuiltPrompt[] = [
   {
@@ -183,11 +183,17 @@ From an executive perspective, the snapshot highlights where performance is scal
                       {...field}
                       placeholder="Message"
                       className="
-                        card text-[20px]! placeholder:text-[#6E6E7A]
-                        text-white resize-none py-6! max-h-40
+                        card text-[16px] md:text-[20px]! placeholder:text-[#6E6E7A]
+                        text-white resize-none py-6! md:max-h-40
                         outline-none  focus-visible:ring-0 scrollbar"
                     />
                   </FormControl>
+                  <Button
+                    type="submit"
+                    className="w-16.5 absolute right-6 top-5 border border-[#6E6E7A] text-[#6E6E7A] bg-transparent! p-1 text-[16px]"
+                  >
+                    Send
+                  </Button>
                 </FormItem>
               )}
             />

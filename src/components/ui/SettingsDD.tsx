@@ -3,7 +3,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Settings } from "lucide-react";
@@ -15,10 +14,8 @@ export function SettingsDD() {
         <Settings />
       </DropdownMenuTrigger>
       <DropdownMenuContent  align="start">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
         <DropdownMenuGroup>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuItem>

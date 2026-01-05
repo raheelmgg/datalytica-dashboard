@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +14,7 @@ type PreBuiltPrompt = {
   category: string;
 };
 
-const DEFAULT_TITLE = "Welcome Joan, what insight can we unlock today?";
+const DEFAULT_TITLE = "Welcome Sam, what insight can we unlock today?";
 
 const PRE_BUILT_PROMPTS: PreBuiltPrompt[] = [
   {
@@ -156,11 +157,17 @@ From a planning perspective, the forecast supports proceeding with the current s
                       {...field}
                       placeholder="Message"
                       className="
-                        card text-[20px]! placeholder:text-[#6E6E7A]
+                        card text-[16px] md:text-[20px]! placeholder:text-[#6E6E7A]
                         text-white resize-none py-6! max-h-40
                         outline-none  focus-visible:ring-0 scrollbar"
                     />
                   </FormControl>
+                  <Button
+                    type="submit"
+                    className="w-16.5 absolute right-6 top-5 border border-[#6E6E7A] text-[#6E6E7A] bg-transparent! p-1 text-[16px]"
+                  >
+                    Send
+                  </Button>
                 </FormItem>
               )}
             />

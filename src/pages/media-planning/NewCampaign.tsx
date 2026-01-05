@@ -45,7 +45,7 @@ import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-
+import datalyticaMap from "../../assets/datalytica-map.png";
 const formSchema = z.object({
   campaignName: z.string().optional(),
   campaignObjective: z.array(z.string()).optional(),
@@ -377,45 +377,70 @@ export default function NewCampaign() {
       navigate("/media-planning/campaigns");
     }, 1000);
   };
-
-  // Update estimates when formats change with toast and animation
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
-
-    // Clear any existing animation
     if (animationIntervalRef.current) {
       clearInterval(animationIntervalRef.current);
       animationIntervalRef.current = null;
     }
-
-    // Format values mapping - each format adds to the total (real client numbers)
-    // Only specified formats have values, others default to 0
-    // Using formatCheckboxes array indices to ensure exact string matching
-    const formatValues: Record<string, { impressions: number; cpm: number; mediaUnits: number; budget: number }> = {
-      [formatCheckboxes[0]]: { impressions: 4000000, cpm: 13, mediaUnits: 40, budget: 100000 }, // DOOH, vertical
-      [formatCheckboxes[1]]: { impressions: 8000000, cpm: 13, mediaUnits: 80, budget: 100000 }, // DOOH, horizontal
-      [formatCheckboxes[2]]: { impressions: 0, cpm: 0, mediaUnits: 0, budget: 0 }, // OOH, 2' x 3'
-      [formatCheckboxes[3]]: { impressions: 9000000, cpm: 12, mediaUnits: 120, budget: 100000 }, // OOH, 4' x 6'
-      [formatCheckboxes[4]]: { impressions: 0, cpm: 0, mediaUnits: 0, budget: 0 }, // OOH, 5' x 10'
+    const formatValues: Record<
+      string,
+      { impressions: number; cpm: number; mediaUnits: number; budget: number }
+    > = {
+      [formatCheckboxes[0]]: {
+        impressions: 4000000,
+        cpm: 13,
+        mediaUnits: 40,
+        budget: 100000,
+      }, // DOOH, vertical
+      [formatCheckboxes[1]]: {
+        impressions: 8000000,
+        cpm: 13,
+        mediaUnits: 80,
+        budget: 100000,
+      }, // DOOH, horizontal
+      [formatCheckboxes[2]]: {
+        impressions: 0,
+        cpm: 0,
+        mediaUnits: 0,
+        budget: 0,
+      }, // OOH, 2' x 3'
+      [formatCheckboxes[3]]: {
+        impressions: 9000000,
+        cpm: 12,
+        mediaUnits: 120,
+        budget: 100000,
+      }, // OOH, 4' x 6'
+      [formatCheckboxes[4]]: {
+        impressions: 0,
+        cpm: 0,
+        mediaUnits: 0,
+        budget: 0,
+      }, // OOH, 5' x 10'
     };
 
-    // Add mobile values
-    const addMobileValues = { impressions: 12000000, cpm: 12, mediaUnits: 120, budget: 100000 };
+    const addMobileValues = {
+      impressions: 12000000,
+      cpm: 12,
+      mediaUnits: 120,
+      budget: 100000,
+    };
 
     if (watchedFormats.length > 0 || watchedAddMobile) {
       toast.loading("Calculating estimates...", { id: "estimates" });
 
-      // Simulate calculation delay
       timeoutId = setTimeout(() => {
-        // Calculate cumulative totals from all selected formats
         const totals = watchedFormats.reduce(
           (acc, format) => {
-            const values = formatValues[format] || { impressions: 0, cpm: 0, mediaUnits: 0, budget: 0 };
-            // Add all values (including 0s for formats without values)
+            const values = formatValues[format] || {
+              impressions: 0,
+              cpm: 0,
+              mediaUnits: 0,
+              budget: 0,
+            };
             acc.impressions += values.impressions;
             acc.mediaUnits += values.mediaUnits;
             acc.budget += values.budget;
-            // CPM: add up like other values
             acc.cpm += values.cpm;
             return acc;
           },
@@ -430,11 +455,16 @@ export default function NewCampaign() {
           totals.cpm += addMobileValues.cpm;
         }
 
-        const formatNumber = (num: number, type: "impressions" | "cpm" | "mediaUnits" | "budget"): string => {
+        const formatNumber = (
+          num: number,
+          type: "impressions" | "cpm" | "mediaUnits" | "budget"
+        ): string => {
           if (type === "impressions") {
             if (num >= 1000000) {
               const value = num / 1000000;
-              return value >= 1 ? `${value.toFixed(1)}M`.replace(".0", "") : `${Math.round(num).toLocaleString()}`;
+              return value >= 1
+                ? `${value.toFixed(1)}M`.replace(".0", "")
+                : `${Math.round(num).toLocaleString()}`;
             }
             return Math.round(num).toLocaleString();
           }
@@ -485,7 +515,6 @@ export default function NewCampaign() {
     };
   }, [watchedFormats, watchedAddMobile]);
 
-  // Animate numbers from old to new value
   const animateNumbers = (
     targetValues: typeof estimates
   ): ReturnType<typeof setInterval> => {
@@ -507,7 +536,11 @@ export default function NewCampaign() {
       return isNaN(parsed) ? 0 : parsed;
     };
 
-    const formatValue = (num: number, original: string, isAnimating: boolean = true): string => {
+    const formatValue = (
+      num: number,
+      original: string,
+      isAnimating: boolean = true
+    ): string => {
       if (num <= 0) return original.includes("$") ? "$0" : "0";
       if (original.includes("M")) {
         const value = num / 1000000;
@@ -568,7 +601,7 @@ export default function NewCampaign() {
       };
 
       const isLastStep = currentStep >= steps;
-      
+
       setDisplayEstimates({
         impressions: formatValue(
           currentValues.impressions,
@@ -581,7 +614,11 @@ export default function NewCampaign() {
           targetValues.mediaUnits,
           !isLastStep
         ),
-        budget: formatValue(currentValues.budget, targetValues.budget, !isLastStep),
+        budget: formatValue(
+          currentValues.budget,
+          targetValues.budget,
+          !isLastStep
+        ),
       });
 
       if (isLastStep) {
@@ -591,6 +628,11 @@ export default function NewCampaign() {
     }, stepDuration);
 
     return interval;
+  };
+
+  const [isMapOpen, setisMapOpen] = useState(false);
+  const handleMapButton = () => {
+    setisMapOpen(true);
   };
   return (
     <div className="flex flex-col gap-y-6">
@@ -860,126 +902,126 @@ export default function NewCampaign() {
                   </div>
                 ) : (
                   <>
-                  {watchedPlacements.includes("Airports") && (
-                    <div className="flex flex-col gap-y-2">
-                      <FormLabel className="text-[14px] font-semibold text-primary">
-                        Airport
-                      </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
-                        <CheckboxGroup
-                          name="airportNetworks"
-                          control={form.control}
-                          options={airportCheckboxes}
-                          isRow={false}
-                        />
+                    {watchedPlacements.includes("Airports") && (
+                      <div className="flex flex-col gap-y-2">
+                        <FormLabel className="text-[14px] font-semibold text-primary">
+                          Airport
+                        </FormLabel>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
+                          <CheckboxGroup
+                            name="airportNetworks"
+                            control={form.control}
+                            options={airportCheckboxes}
+                            isRow={false}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {watchedPlacements.includes("Convenience store") && (
-                    <div className="flex flex-col gap-y-2">
-                      <FormLabel className="text-[14px] font-semibold text-primary">
-                        Convenience store
-                      </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
-                        <CheckboxGroup
-                          name="convenienceStoreNetworks"
-                          control={form.control}
-                          options={convenienceStoreCheckboxes}
-                          isRow={false}
-                        />
+                    )}
+                    {watchedPlacements.includes("Convenience store") && (
+                      <div className="flex flex-col gap-y-2">
+                        <FormLabel className="text-[14px] font-semibold text-primary">
+                          Convenience store
+                        </FormLabel>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
+                          <CheckboxGroup
+                            name="convenienceStoreNetworks"
+                            control={form.control}
+                            options={convenienceStoreCheckboxes}
+                            isRow={false}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {watchedPlacements.includes("Grocery") && (
-                    <div className="flex flex-col gap-y-2">
-                      <FormLabel className="text-[14px] font-semibold text-primary">
-                        Grocery
-                      </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
-                        <CheckboxGroup
-                          name="groceryNetworks"
-                          control={form.control}
-                          options={groceryNetworks}
-                          isRow={false}
-                        />
+                    )}
+                    {watchedPlacements.includes("Grocery") && (
+                      <div className="flex flex-col gap-y-2">
+                        <FormLabel className="text-[14px] font-semibold text-primary">
+                          Grocery
+                        </FormLabel>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
+                          <CheckboxGroup
+                            name="groceryNetworks"
+                            control={form.control}
+                            options={groceryNetworks}
+                            isRow={false}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {watchedPlacements.includes("Government office") && (
-                    <div className="flex flex-col gap-y-2">
-                      <FormLabel className="text-[14px] font-semibold text-primary">
-                        Government office
-                      </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
-                        <CheckboxGroup
-                          name="governmentOfficeNetworks"
-                          control={form.control}
-                          options={governmentOfficeNetworks}
-                          isRow={false}
-                        />
+                    )}
+                    {watchedPlacements.includes("Government office") && (
+                      <div className="flex flex-col gap-y-2">
+                        <FormLabel className="text-[14px] font-semibold text-primary">
+                          Government office
+                        </FormLabel>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
+                          <CheckboxGroup
+                            name="governmentOfficeNetworks"
+                            control={form.control}
+                            options={governmentOfficeNetworks}
+                            isRow={false}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {watchedPlacements.includes("Transit") && (
-                    <div className="flex flex-col gap-y-2">
-                      <FormLabel className="text-[14px] font-semibold text-primary">
-                        Transit
-                      </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
-                        <CheckboxGroup
-                          name="transitNetworks"
-                          control={form.control}
-                          options={transitNetworks}
-                          isRow={false}
-                        />
+                    )}
+                    {watchedPlacements.includes("Transit") && (
+                      <div className="flex flex-col gap-y-2">
+                        <FormLabel className="text-[14px] font-semibold text-primary">
+                          Transit
+                        </FormLabel>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
+                          <CheckboxGroup
+                            name="transitNetworks"
+                            control={form.control}
+                            options={transitNetworks}
+                            isRow={false}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {watchedPlacements.includes("Gas station") && (
-                    <div className="flex flex-col gap-y-2">
-                      <FormLabel className="text-[14px] font-semibold text-primary">
-                        Gas station
-                      </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
-                        <CheckboxGroup
-                          name="gasStationNetworks"
-                          control={form.control}
-                          options={gasStationNetworks}
-                          isRow={false}
-                        />
+                    )}
+                    {watchedPlacements.includes("Gas station") && (
+                      <div className="flex flex-col gap-y-2">
+                        <FormLabel className="text-[14px] font-semibold text-primary">
+                          Gas station
+                        </FormLabel>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
+                          <CheckboxGroup
+                            name="gasStationNetworks"
+                            control={form.control}
+                            options={gasStationNetworks}
+                            isRow={false}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {watchedPlacements.includes("Roadside") && (
-                    <div className="flex flex-col gap-y-2">
-                      <FormLabel className="text-[14px] font-semibold text-primary">
-                        Roadside
-                      </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
-                        <CheckboxGroup
-                          name="roadsideNetworks"
-                          control={form.control}
-                          options={roadsideNetworks}
-                          isRow={false}
-                        />
+                    )}
+                    {watchedPlacements.includes("Roadside") && (
+                      <div className="flex flex-col gap-y-2">
+                        <FormLabel className="text-[14px] font-semibold text-primary">
+                          Roadside
+                        </FormLabel>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
+                          <CheckboxGroup
+                            name="roadsideNetworks"
+                            control={form.control}
+                            options={roadsideNetworks}
+                            isRow={false}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {watchedPlacements.includes("Large format") && (
-                    <div className="flex flex-col gap-y-2">
-                      <FormLabel className="text-[14px] font-semibold text-primary">
-                        Large format
-                      </FormLabel>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
-                        <CheckboxGroup
-                          name="largeFormatNetworks"
-                          control={form.control}
-                          options={largeFormatNetworks}
-                          isRow={false}
-                        />
+                    )}
+                    {watchedPlacements.includes("Large format") && (
+                      <div className="flex flex-col gap-y-2">
+                        <FormLabel className="text-[14px] font-semibold text-primary">
+                          Large format
+                        </FormLabel>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
+                          <CheckboxGroup
+                            name="largeFormatNetworks"
+                            control={form.control}
+                            options={largeFormatNetworks}
+                            isRow={false}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   </>
                 )}
               </div>
@@ -1251,12 +1293,28 @@ export default function NewCampaign() {
               </div>
               <div>
                 <div className="flex flex-col gap-y-2">
-                  <div className="bg-secondary p-2 rounded-3xl text-white flex flex-row justify-center items-center gap-2 md:h-20">
+                  <button
+                    onClick={handleMapButton}
+                    className="bg-secondary p-2 rounded-3xl text-white flex flex-row justify-center items-center gap-2 md:h-20 cursor-pointer "
+                  >
                     <span className="text-[16px] font-bold leading-tight">
                       Map
                     </span>
                     <img src={mapIcon} alt="map Icon" />
-                  </div>
+                  </button>
+                  <DashboardModal
+                    isOpen={isMapOpen}
+                    onClose={() => setisMapOpen(false)}
+                    title={`Locations`}
+                  >
+                    <div className="card flex flex-col gap-4">
+                      <img
+                        src={datalyticaMap}
+                        alt="datalytica-map-module"
+                        className="rounded-xl"
+                      />
+                    </div>
+                  </DashboardModal>
                   <div>
                     <Button
                       className="w-full text-[16px] font-semibold"
